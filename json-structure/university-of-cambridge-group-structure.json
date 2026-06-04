@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://www.lookup.cam.ac.uk/structure/group.json",
+  "name": "Group",
+  "type": "object",
+  "description": "A group record from the Cambridge Lookup/Ibis web service API.",
+  "properties": {
+    "cancelled": { "type": "boolean" },
+    "groupid": { "type": "string" },
+    "name": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "email": { "type": "string" }
+  }
+}

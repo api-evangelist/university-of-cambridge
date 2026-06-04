@@ -1,0 +1,54 @@
+vocabulary:
+  name: University of Cambridge Lookup/Ibis Vocabulary
+  description: >-
+    Controlled terms drawn from the published Cambridge Lookup/Ibis web service
+    OpenAPI 3.0 specification, covering the directory of people, institutions,
+    and groups within the University of Cambridge.
+  version: "1.2"
+  terms:
+    - term: CRSid
+      definition: >-
+        A person's primary University of Cambridge identifier under the "crsid"
+        scheme, always visible regardless of attribute visibility.
+      tags: [identity, person, identifier]
+    - term: Person
+      definition: >-
+        A directory record for an individual, including identifiers, visible
+        names, MIS affiliation, and optional attributes.
+      tags: [person, directory]
+    - term: Institution
+      definition: >-
+        A directory record for a University body (e.g. a department or college),
+        identified by an instid such as "CS".
+      tags: [institution, directory]
+    - term: Group
+      definition: >-
+        A named collection of members (people and/or included groups), identified
+        by a numeric groupid string and a unique name.
+      tags: [group, directory]
+    - term: Identifier
+      definition: A scheme/value pair identifying a person (e.g. scheme "crsid").
+      tags: [identifier, person]
+    - term: Attribute
+      definition: >-
+        A scheme/value pair describing a person or institution, optionally
+        time-limited and with a visibility level.
+      tags: [attribute, metadata]
+    - term: misAffiliation
+      definition: >-
+        A person's Management Information System status, one of "staff",
+        "student", "staff,student", or empty.
+      tags: [person, affiliation]
+    - term: visibility
+      definition: >-
+        The visibility level of a person attribute, one of "private",
+        "institution", "university", or "world".
+      tags: [attribute, privacy]
+    - term: fetch
+      definition: >-
+        Query parameter requesting additional attributes or references such as
+        all_identifiers, all_members, or contact_rows.
+      tags: [query, parameter]
+    - term: cancelled
+      definition: Flag indicating whether a person, institution, or group is cancelled.
+      tags: [status, lifecycle]

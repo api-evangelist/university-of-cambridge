@@ -25,6 +25,7 @@ tags:
   - Developer Portal
 created: '2026-06-03'
 modified: '2026-06-03'
+# artifact pointers added for Lookup/Ibis OpenAPI 3.0 spec
 specificationVersion: '0.19'
 apis:
   - aid: university-of-cambridge:lookup
@@ -46,6 +47,20 @@ apis:
     properties:
       - type: Documentation
         url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+      - type: OpenAPI
+        url: openapi/university-of-cambridge-lookup.yaml
+      - type: JSONSchema
+        url: json-schema/university-of-cambridge-person-schema.json
+      - type: x-json-structure
+        url: json-structure/university-of-cambridge-person-structure.json
+      - type: x-examples
+        url: examples/university-of-cambridge-person-example.json
+      - type: x-spectral-rules
+        url: rules/university-of-cambridge-rules.yml
+      - type: x-vocabulary
+        url: vocabulary/university-of-cambridge-vocabulary.yml
+      - type: x-json-ld-context
+        url: json-ld/university-of-cambridge-context.jsonld
   - aid: university-of-cambridge:raven
     name: Raven Authentication (OAuth2 / OpenID Connect)
     description: >-

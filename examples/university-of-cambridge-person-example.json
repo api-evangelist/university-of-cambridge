@@ -1,0 +1,19 @@
+{
+  "result": {
+    "person": {
+      "cancelled": false,
+      "identifier": {
+        "scheme": "crsid",
+        "value": "abc12"
+      },
+      "displayName": "Ada B. Carter",
+      "registeredName": "Ada Beatrice Carter",
+      "surname": "Carter",
+      "visibleName": "Ada B. Carter",
+      "misAffiliation": "staff",
+      "identifiers": [
+        { "scheme": "crsid", "value": "abc12" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://www.lookup.cam.ac.uk/structure/institution.json",
+  "name": "Institution",
+  "type": "object",
+  "description": "An institution record from the Cambridge Lookup/Ibis web service API.",
+  "properties": {
+    "cancelled": { "type": "boolean" },
+    "instid": { "type": "string" },
+    "name": { "type": "string" },
+    "acronym": { "type": "string" }
+  }
+}

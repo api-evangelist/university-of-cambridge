@@ -1,0 +1,10 @@
+{
+  "result": {
+    "institution": {
+      "cancelled": false,
+      "instid": "CS",
+      "name": "Department of Computer Science and Technology",
+      "acronym": "DCST"
+    }
+  }
+}

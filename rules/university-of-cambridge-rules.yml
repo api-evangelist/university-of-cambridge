@@ -1,0 +1,56 @@
+formats:
+  - oas3
+extends:
+  - spectral:oas
+rules:
+  cam-info-title:
+    description: API must declare an info.title.
+    severity: error
+    given: $.info
+    then:
+      field: title
+      function: truthy
+  cam-info-version:
+    description: API must declare an info.version.
+    severity: error
+    given: $.info
+    then:
+      field: version
+      function: truthy
+  cam-servers-defined:
+    description: At least one server URL must be defined.
+    severity: error
+    given: $.servers
+    then:
+      function: length
+      functionOptions:
+        min: 1
+  cam-server-https:
+    description: Lookup servers should use HTTPS (observed pattern in the published spec).
+    severity: warn
+    given: $.servers[*].url
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+  cam-operation-id:
+    description: Every operation should carry an operationId (e.g. Person_get, Group_allGroups).
+    severity: warn
+    given: $.paths[*][get,post,put,delete]
+    then:
+      field: operationId
+      function: truthy
+  cam-operation-tags:
+    description: Operations should be tagged by resource (person, institution, group, attribute).
+    severity: warn
+    given: $.paths[*][get,post,put,delete]
+    then:
+      field: tags
+      function: truthy
+  cam-result-wrapper:
+    description: JSON responses are wrapped in a top-level "result" container per the Lookup/Ibis convention.
+    severity: info
+    given: $.paths[*][get,post,put,delete].responses.200.content.application/json.schema.properties
+    then:
+      field: result
+      function: defined

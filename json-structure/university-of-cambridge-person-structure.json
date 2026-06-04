@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://www.lookup.cam.ac.uk/structure/person.json",
+  "name": "Person",
+  "type": "object",
+  "description": "A person record from the Cambridge Lookup/Ibis web service API.",
+  "properties": {
+    "cancelled": { "type": "boolean" },
+    "identifier": {
+      "type": "object",
+      "properties": {
+        "scheme": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    },
+    "displayName": { "type": "string" },
+    "registeredName": { "type": "string" },
+    "surname": { "type": "string" },
+    "visibleName": { "type": "string" },
+    "misAffiliation": { "type": "string" },
+    "identifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "scheme": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

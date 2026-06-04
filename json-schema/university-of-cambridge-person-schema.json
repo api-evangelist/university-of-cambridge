@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.lookup.cam.ac.uk/schema/person.json",
+  "title": "Person",
+  "description": "A person record returned by the Cambridge Lookup/Ibis web service API.",
+  "type": "object",
+  "properties": {
+    "cancelled": {
+      "type": "boolean",
+      "description": "Flag indicating if the person is cancelled."
+    },
+    "identifier": {
+      "$ref": "https://www.lookup.cam.ac.uk/schema/identifier.json",
+      "description": "The person's primary identifier (typically their CRSid)."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "The person's display name (if visible)."
+    },
+    "registeredName": {
+      "type": "string",
+      "description": "The person's registered name (if visible)."
+    },
+    "surname": {
+      "type": "string",
+      "description": "The person's surname (if visible)."
+    },
+    "visibleName": {
+      "type": "string",
+      "description": "The person's display name if visible, otherwise registered name, surname, or primary identifier."
+    },
+    "misAffiliation": {
+      "type": "string",
+      "description": "The person's MIS status (\"staff\", \"student\", \"staff,student\" or \"\")."
+    },
+    "identifiers": {
+      "type": "array",
+      "items": { "$ref": "https://www.lookup.cam.ac.uk/schema/identifier.json" },
+      "description": "A list of the person's identifiers (only populated when fetch includes all_identifiers)."
+    },
+    "attributes": {
+      "type": "array",
+      "items": { "$ref": "https://www.lookup.cam.ac.uk/schema/attribute.json" },
+      "description": "A list of the person's attributes (only populated when requested via fetch)."
+    }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "object",
+      "properties": {
+        "scheme": { "type": "string", "description": "The identifier's scheme (e.g., \"crsid\")." },
+        "value": { "type": "string", "description": "The identifier's value in that scheme." }
+      }
+    }
+  }
+}

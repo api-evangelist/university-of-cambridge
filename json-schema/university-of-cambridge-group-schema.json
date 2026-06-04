@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.lookup.cam.ac.uk/schema/group.json",
+  "title": "Group",
+  "description": "A group record returned by the Cambridge Lookup/Ibis web service API.",
+  "type": "object",
+  "properties": {
+    "cancelled": {
+      "type": "boolean",
+      "description": "Flag indicating if the group is cancelled."
+    },
+    "groupid": {
+      "type": "string",
+      "description": "The group's numeric ID (a string, e.g., \"100656\")."
+    },
+    "name": {
+      "type": "string",
+      "description": "The group's unique name (e.g., \"cs-editors\")."
+    },
+    "title": {
+      "type": "string",
+      "description": "The group's title."
+    },
+    "description": {
+      "type": "string",
+      "description": "The more detailed description of the group."
+    },
+    "email": {
+      "type": "string",
+      "description": "The group's email address."
+    },
+    "members": {
+      "type": "array",
+      "items": { "$ref": "https://www.lookup.cam.ac.uk/schema/person.json" },
+      "description": "A list of the group's members, including recursively included groups (only populated when fetch includes all_members)."
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "cam": "https://www.lookup.cam.ac.uk/vocab#",
+    "@vocab": "https://www.lookup.cam.ac.uk/vocab#",
+
+    "University": "schema:CollegeOrUniversity",
+    "name": "schema:name",
+    "url": "schema:url",
+
+    "Person": "schema:Person",
+    "displayName": "schema:name",
+    "registeredName": "cam:registeredName",
+    "surname": "schema:familyName",
+    "visibleName": "cam:visibleName",
+    "misAffiliation": "cam:misAffiliation",
+    "crsid": "schema:identifier",
+
+    "Institution": "schema:Organization",
+    "instid": "schema:identifier",
+    "acronym": "schema:alternateName",
+
+    "Group": "schema:Organization",
+    "groupid": "schema:identifier",
+    "title": "schema:name",
+    "description": "schema:description",
+    "email": "schema:email",
+
+    "Identifier": "schema:PropertyValue",
+    "scheme": "schema:propertyID",
+    "value": "schema:value",
+
+    "members": { "@id": "schema:member", "@container": "@set" },
+    "attributes": { "@id": "cam:attribute", "@container": "@set" },
+    "cancelled": "cam:cancelled"
+  },
+  "@type": "University",
+  "name": "University of Cambridge",
+  "url": "https://www.cam.ac.uk/"
+}

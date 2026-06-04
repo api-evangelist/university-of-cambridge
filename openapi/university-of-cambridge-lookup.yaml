@@ -1,0 +1,3347 @@
+openapi: 3.0.0
+info:
+  title: Lookup/Ibis web service API
+  version: '1.2'
+servers:
+  - url: 'https://lookup-test.srv.uis.cam.ac.uk/api/v1'
+    description: Test server
+  - url: 'https://www.lookup.cam.ac.uk/api/v1'
+    description: Live server
+paths:
+  '/group/all-groups':
+    get:
+      tags:
+        - group
+      summary: Return a list of all groups.
+      description: |-
+        Return a list of all groups.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+      operationId: Group_allGroups
+      parameters:
+        - name: includeCancelled
+          in: query
+          description: |-
+            Whether or not to include cancelled
+            groups. By default, only live groups are returned.
+          required: false
+          schema:
+            type: boolean
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/list':
+    get:
+      tags:
+        - group
+      summary: Get the groups with the specified IDs or names.
+      description: |-
+        Get the groups with the specified IDs or names.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        The results are sorted by groupid.
+        
+        NOTE: The URL path length is limited to around 8000 characters,
+        which limits the number of groups that this method can fetch. Group
+        IDs are currently 6 characters long, and must be comma separated and
+        URL encoded, which limits this method to around 800 groups by ID,
+        but probably fewer by name, depending on the group name lengths.
+        
+        NOTE: The groups returned may include cancelled groups. It is the
+        caller's responsibility to check their cancelled flags.
+      operationId: Group_listGroups
+      parameters:
+        - name: groupids
+          in: query
+          description: |-
+            A comma-separated list of group IDs or
+            group names (may be a mix of both).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/modified-groups':
+    get:
+      tags:
+        - group
+      summary: Find all groups modified between the specified pair of transactions.
+      description: |-
+        Find all groups modified between the specified pair of transactions.
+        
+        The transaction IDs specified should be the IDs from two different
+        requests for the last (most recent) transaction ID, made at different
+        times, that returned different values, indicating that some Lookup
+        data was modified in the period between the two requests. This method
+        then determines which (if any) groups were affected.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        NOTE: All data returned reflects the latest available data about each
+        group. It is not possible to query for old data, or more detailed
+        information about the specific changes made.
+      operationId: Group_modifiedGroups
+      parameters:
+        - name: minTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            after (but not including) this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: maxTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            up to and including this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: groupids
+          in: query
+          description: |-
+            Only include groups with IDs or names in
+            this list. By default, all modified groups will be included.
+          required: false
+          schema:
+            type: string
+        - name: includeCancelled
+          in: query
+          description: |-
+            Include cancelled groups. By
+            default, cancelled groups are excluded.
+          required: false
+          schema:
+            type: boolean
+        - name: membershipChanges
+          in: query
+          description: |-
+            Include groups whose members have
+            changed. By default, changes to group memberships are not taken into
+            consideration.
+          required: false
+          schema:
+            type: boolean
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The modified groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/search':
+    get:
+      tags:
+        - group
+      summary: Search for groups using a free text query string.
+      description: |-
+        Search for groups using a free text query string. This is the same
+        search function that is used in the Lookup web application.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        NOTE: If the query string starts with the prefix `"group:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` parameter, but it will respect the value of
+        `includeCancelled`. In addition, an LQL query will ignore
+        the `orderBy` parameter, since LQL queries always return
+        results in ID order.
+      operationId: Group_search
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled groups to
+            be included. Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: offset
+          in: query
+          description: |-
+            The number of results to skip at the start
+            of the search. Defaults to 0.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: |-
+            The maximum number of results to return.
+            Defaults to 100.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: orderBy
+          in: query
+          description: |-
+            The order in which to list the results.
+            This may be `"groupid"`, `"name"` (the default for non-LQL
+            queries) or `"title"`. This is ignored for LQL queries, which
+            always return results in groupid order.
+          required: false
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The matching groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/search-count':
+    get:
+      tags:
+        - group
+      summary: |-
+        Count the number of groups that would be returned by a search using
+        a free text query string.
+      description: |-
+        Count the number of groups that would be returned by a search using
+        a free text query string.
+        
+        NOTE: If the query string starts with the prefix `"group:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` parameter, but it will respect the value of
+        `includeCancelled`.
+      operationId: Group_searchCount
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled groups to
+            be included. Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: |-
+            The number of matching groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/{groupid}':
+    get:
+      tags:
+        - group
+      summary: Get the group with the specified ID or name.
+      description: |-
+        Get the group with the specified ID or name.
+        
+        By default, only a few basic details about the group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of the group.
+        
+        NOTE: The group returned may be a cancelled group. It is the caller's
+        responsibility to check its cancelled flag.
+      operationId: Group_getGroup
+      parameters:
+        - name: groupid
+          in: path
+          description: |-
+            The ID or name of the group to fetch. This
+            may be either the numeric ID or the short hyphenated group name (for
+            example `"100656"` or `"cs-editors"`).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested group or `null` if it was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      group:
+                        $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/{groupid}/cancelled-members':
+    get:
+      tags:
+        - group
+      summary: |-
+        Get all the cancelled members of the specified group, including
+        cancelled members of groups included by the group, and groups included
+        by those groups, and so on.
+      description: |-
+        Get all the cancelled members of the specified group, including
+        cancelled members of groups included by the group, and groups included
+        by those groups, and so on.
+        
+        By default, only a few basic details about each member are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each person.
+        
+        NOTE: This method returns only cancelled people. It does not include
+        people who were removed from the group. Cancelled people are no longer
+        considered to be current staff, students or accredited visitors, and
+        are no longer regarded as belonging to any groups or institutions. The
+        list returned here reflects their group memberships just before they
+        were cancelled, and so is out-of-date data that should be used with
+        caution.
+      operationId: Group_getCancelledMembers
+      parameters:
+        - name: groupid
+          in: path
+          description: |-
+            The ID or name of the group.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for each person.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The group's cancelled members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/{groupid}/direct-members':
+    get:
+      tags:
+        - group
+      summary: |-
+        Get the direct members of the specified group, not including members
+        included via groups included by the group.
+      description: |-
+        Get the direct members of the specified group, not including members
+        included via groups included by the group.
+        
+        By default, only a few basic details about each member are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each person.
+        
+        NOTE: This method will not include cancelled people.
+      operationId: Group_getDirectMembers
+      parameters:
+        - name: groupid
+          in: path
+          description: |-
+            The ID or name of the group.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for each person.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The group's direct members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/{groupid}/members':
+    get:
+      tags:
+        - group
+      summary: |-
+        Get all the members of the specified group, including members of
+        groups included by the group, and groups included by those groups,
+        and so on.
+      description: |-
+        Get all the members of the specified group, including members of
+        groups included by the group, and groups included by those groups,
+        and so on.
+        
+        By default, only a few basic details about each member are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each person.
+        
+        NOTE: This method will not include cancelled people.
+      operationId: Group_getMembers
+      parameters:
+        - name: groupid
+          in: path
+          description: |-
+            The ID or name of the group.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for each person.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The group's members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/group/{groupid}/token':
+    get:
+      tags:
+        - group
+      summary: |-
+        Get a signed JSON Web Token (JWT) with the group as subject and
+        specified audience, only if authorized user/group has permission to edit
+        the group.
+      description: |-
+        Get a signed JSON Web Token (JWT) with the group as subject and
+        specified audience, only if authorized user/group has permission to edit
+        the group.
+      operationId: Group_getToken
+      parameters:
+        - name: groupid
+          in: path
+          description: The ID of the group.
+          required: true
+          schema:
+            type: string
+        - name: aud
+          in: query
+          description: |-
+            Audience for the signed JWT.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The serialized JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/all-attr-schemes':
+    get:
+      tags:
+        - institution
+      summary: Return a list of all the institution attribute schemes available.
+      description: |-
+        Return a list of all the institution attribute schemes available.
+        The `schemeid` values of these schemes may be used in the
+        `fetch` parameter of other methods that return institutions.
+      operationId: Institution_allAttributeSchemes
+      responses:
+        200:
+          description: |-
+            All the available institution attribute schemes (in precedence
+            order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attributeSchemes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AttributeScheme'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/all-insts':
+    get:
+      tags:
+        - institution
+      summary: Return a list of all institutions.
+      description: |-
+        Return a list of all institutions.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references.
+      operationId: Institution_allInsts
+      parameters:
+        - name: includeCancelled
+          in: query
+          description: |-
+            Whether or not to include cancelled
+            institutions. By default, only live institutions are returned.
+          required: false
+          schema:
+            type: boolean
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested institutions (in instid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/list':
+    get:
+      tags:
+        - institution
+      summary: Get the institutions with the specified IDs.
+      description: |-
+        Get the institutions with the specified IDs.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references.
+        
+        The results are sorted by ID.
+        
+        NOTE: The URL path length is limited to around 8000 characters, and
+        an instid is up to 8 characters long. Allowing for comma separators
+        and URL encoding, this limits the number of institutions that this
+        method may fetch to around 700.
+        
+        NOTE: The institutions returned may include cancelled institutions.
+        It is the caller's responsibility to check their cancelled flags.
+      operationId: Institution_listInsts
+      parameters:
+        - name: instids
+          in: query
+          description: |-
+            A comma-separated list of instids.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested institutions (in instid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/modified-insts':
+    get:
+      tags:
+        - institution
+      summary: |-
+        Find all institutions modified between the specified pair of
+        transactions.
+      description: |-
+        Find all institutions modified between the specified pair of
+        transactions.
+        
+        The transaction IDs specified should be the IDs from two different
+        requests for the last (most recent) transaction ID, made at different
+        times, that returned different values, indicating that some Lookup
+        data was modified in the period between the two requests. This method
+        then determines which (if any) institutions were affected.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references.
+        
+        NOTE: All data returned reflects the latest available data about each
+        institution. It is not possible to query for old data, or more
+        detailed information about the specific changes made.
+      operationId: Institution_modifiedInsts
+      parameters:
+        - name: minTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            after (but not including) this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: maxTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            up to and including this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: instids
+          in: query
+          description: |-
+            Only include institutions with instids in
+            this list. By default, all modified institutions will be included.
+          required: false
+          schema:
+            type: string
+        - name: includeCancelled
+          in: query
+          description: |-
+            Include cancelled institutions. By
+            default, cancelled institutions are excluded.
+          required: false
+          schema:
+            type: boolean
+        - name: contactRowChanges
+          in: query
+          description: |-
+            Include institutions whose contact
+            rows have changed. By default, changes to institution contact rows are
+            not taken into consideration.
+          required: false
+          schema:
+            type: boolean
+        - name: membershipChanges
+          in: query
+          description: |-
+            Include institutions whose members
+            have changed. By default, changes to institutional memberships are not
+            taken into consideration.
+          required: false
+          schema:
+            type: boolean
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The modified institutions (in instid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/search':
+    get:
+      tags:
+        - institution
+      summary: Search for institutions using a free text query string.
+      description: |-
+        Search for institutions using a free text query string. This is the
+        same search function that is used in the Lookup web application.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references.
+        
+        NOTE: If the query string starts with the prefix `"inst:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` and `attributes` parameters, but
+        it will respect the value of `includeCancelled`. In
+        addition, an LQL query will ignore the `orderBy` parameter,
+        since LQL queries always return results in ID order.
+      operationId: Institution_search
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled institutions
+            to be included. Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: attributes
+          in: query
+          description: |-
+            A comma-separated list of attributes to
+            consider when searching. If this is `null` (the default) then
+            all attribute schemes marked as searchable will be included. This is
+            ignored for LQL queries.
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: |-
+            The number of results to skip at the start
+            of the search. Defaults to 0.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: |-
+            The maximum number of results to return.
+            Defaults to 100.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: orderBy
+          in: query
+          description: |-
+            The order in which to list the results.
+            This may be either `"instid"` or `"name"` (the default for
+            non-LQL queries). This is ignored for LQL queries, which always return
+            results in instid order.
+          required: false
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The matching institutions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/search-count':
+    get:
+      tags:
+        - institution
+      summary: |-
+        Count the number of institutions that would be returned by a search
+        using a free text query string.
+      description: |-
+        Count the number of institutions that would be returned by a search
+        using a free text query string.
+        
+        NOTE: If the query string starts with the prefix `"inst:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` and `attributes` parameters, but
+        it will respect the value of `includeCancelled`.
+      operationId: Institution_searchCount
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled institutions
+            to be included. Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: attributes
+          in: query
+          description: |-
+            A comma-separated list of attributes to
+            consider when searching. If this is `null` (the default) then
+            all attribute schemes marked as searchable will be included. This is
+            ignored for LQL queries.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The number of matching institutions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}':
+    get:
+      tags:
+        - institution
+      summary: Get the institution with the specified ID.
+      description: |-
+        Get the institution with the specified ID.
+        
+        By default, only a few basic details about the institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references of the institution.
+        
+        NOTE: The institution returned may be a cancelled institution. It is
+        the caller's responsibility to check its cancelled flag.
+      operationId: Institution_getInst
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution to fetch.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested institution or `null` if it was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institution:
+                        $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}/cancelled-members':
+    get:
+      tags:
+        - institution
+      summary: Get all the cancelled members of the specified institution.
+      description: |-
+        Get all the cancelled members of the specified institution.
+        
+        By default, only a few basic details about each member are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each person.
+        
+        NOTE: This method returns only cancelled people. It does not include
+        people who were removed from the institution. Cancelled people are no
+        longer considered to be current staff, students or accredited visitors,
+        and are no longer regarded as belonging to any groups or institutions.
+        The list returned here reflects their institutional memberships just
+        before they were cancelled, and so is out-of-date data that should be
+        used with caution.
+      operationId: Institution_getCancelledMembers
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for each person.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The institution's cancelled members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}/contact-rows':
+    get:
+      tags:
+        - institution
+      summary: Get all the contact rows of the specified institution.
+      description: |-
+        Get all the contact rows of the specified institution.
+        
+        Any addresses, email addresses, phone numbers and web pages
+        associated with the contact rows are automatically returned, as
+        well as any people referred to by the contact rows.
+        
+        If any of the contact rows refer to people, then only a few basic
+        details about each person are returned, but the optional
+        `fetch` parameter may be used to fetch additional
+        attributes or references of each person.
+        
+        NOTE: This method will not include cancelled people.
+      operationId: Institution_getContactRows
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for any people referred to by any
+            of the contact rows.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The institution's contact rows.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institution.contactRows:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ContactRow'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}/get-attributes':
+    get:
+      tags:
+        - institution
+      summary: Get one or more (possibly multi-valued) attributes of an institution.
+      description: |-
+        Get one or more (possibly multi-valued) attributes of an institution.
+        The returned attributes are sorted by attribute scheme precedence and
+        then attribute precedence.
+      operationId: Institution_getAttributes
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+        - name: attrs
+          in: query
+          description: |-
+            The attribute scheme(s) to fetch. This may
+            include any number of the attributes or pseudo-attributes, but it
+            may not include references or attribute chains (see the documentation
+            for the `fetch` parameter in this class).
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested attributes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attributes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Attribute'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}/members':
+    get:
+      tags:
+        - institution
+      summary: Get all the members of the specified institution.
+      description: |-
+        Get all the members of the specified institution.
+        
+        By default, only a few basic details about each member are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each person.
+        
+        NOTE: This method will not include cancelled people.
+      operationId: Institution_getMembers
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch for each person.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The institution's members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/inst/{instid}/{attrid}':
+    get:
+      tags:
+        - institution
+      summary: Get a specific attribute of an institution.
+      description: |-
+        Get a specific attribute of an institution.
+      operationId: Institution_getAttribute
+      parameters:
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+        - name: attrid
+          in: path
+          description: |-
+            The ID of the attribute to fetch.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: |-
+            The requested attribute.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attribute:
+                        $ref: '#/components/schemas/Attribute'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/last-transaction':
+    get:
+      tags:
+        - ibis
+      summary: Get the ID of the last (most recent) transaction.
+      description: |-
+        Get the ID of the last (most recent) transaction.
+        
+        A transaction represents an edit made to data in Lookup. Each
+        transaction is assigned a unique, sequential, numeric ID. Thus
+        this last transaction ID will increase each time some data in
+        Lookup is changed.
+      operationId: Ibis_getLastTransactionId
+      responses:
+        200:
+          description: |-
+            The ID of the latest transaction.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int64
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/all-attr-schemes':
+    get:
+      tags:
+        - person
+      summary: Return a list of all the person attribute schemes available.
+      description: |-
+        Return a list of all the person attribute schemes available. The
+        `schemeid` values of these schemes may be used in the
+        `fetch` parameter of other methods that return people.
+        
+        NOTE: Some of these attribute schemes are not currently used (no
+        people have attribute values in the scheme). These schemes are
+        reserved for possible future use.
+      operationId: Person_allAttributeSchemes
+      responses:
+        200:
+          description: |-
+            All the available person attribute schemes (in precedence
+            order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attributeSchemes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AttributeScheme'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/all-people':
+    get:
+      tags:
+        - person
+      summary: Return a list of all people (in batches).
+      description: |-
+        Return a list of all people (in batches).
+        
+        The results are sorted by identifier, starting with the first person
+        after the person with the specified identifier. Thus, to iterate over
+        all people, pass a `null` identifier to get the first batch of
+        people, then pass the last identifier from the previous batch to get
+        the next batch, and repeat until no more people are returned.
+        
+        By default, only a few basic details about each person are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+      operationId: Person_allPeople
+      parameters:
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled people to
+            be included (people who are no longer members of the University).
+            Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: identifier
+          in: query
+          description: |-
+            The identifier (CRSid) of the person to
+            start after, or `null` to start from the first person.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: |-
+            The maximum number of people to return.
+            Defaults to 100.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested people (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/list':
+    get:
+      tags:
+        - person
+      summary: Get the people with the specified identifiers (typically CRSids).
+      description: |-
+        Get the people with the specified identifiers (typically CRSids).
+        
+        Each identifier may be either a CRSid, or an identifier from another
+        identifier scheme, prefixed with that scheme's name and a slash. For
+        example `"mug99"` or `"usn/123456789"`.
+        
+        By default, only a few basic details about each person are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        The results are sorted by identifier scheme and value.
+        
+        NOTE: The number of people that may be fetched in a single call is
+        limited by the URL path length limit (around 8000 characters). A
+        CRSid is up to 7 characters long, and other identifiers are typically
+        longer, since they must also include the identifier scheme. Thus the
+        number of people that this method may fetch is typically limited to a
+        few hundred.
+        
+        NOTE: The people returned may include cancelled people. It is the
+        caller's repsonsibility to check their cancelled flags.
+      operationId: Person_listPeople
+      parameters:
+        - name: crsids
+          in: query
+          description: |-
+            A comma-separated list of identifiers. The name
+            of the query parameter reflects a time when only crsids were used with
+            lookup. Alternate schemes can be specified as noted above.
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested people (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/modified-people':
+    get:
+      tags:
+        - person
+      summary: Find all people modified between the specified pair of transactions.
+      description: |-
+        Find all people modified between the specified pair of transactions.
+        
+        The transaction IDs specified should be the IDs from two different
+        requests for the last (most recent) transaction ID, made at different
+        times, that returned different values, indicating that some Lookup
+        data was modified in the period between the two requests. This method
+        then determines which (if any) people were affected.
+        
+        By default, only a few basic details about each person are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        NOTE: All data returned reflects the latest available data about each
+        person. It is not possible to query for old data, or more detailed
+        information about the specific changes made.
+      operationId: Person_modifiedPeople
+      parameters:
+        - name: minTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            after (but not including) this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: maxTxId
+          in: query
+          description: |-
+            Include modifications made in transactions
+            up to and including this one.
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: crsids
+          in: query
+          description: |-
+            Only include people with identifiers in this
+            list. By default, all modified people will be included.
+          required: false
+          schema:
+            type: string
+        - name: includeCancelled
+          in: query
+          description: |-
+            Include cancelled people (people
+            who are no longer members of the University). By default, cancelled
+            people are excluded.
+          required: false
+          schema:
+            type: boolean
+        - name: membershipChanges
+          in: query
+          description: |-
+            Include people whose group or
+            institutional memberships have changed. By default, only people whose
+            attributes have been directly modified are included.
+          required: false
+          schema:
+            type: boolean
+        - name: instNameChanges
+          in: query
+          description: |-
+            Include people who are members of
+            instituions whose names have changed. This will also cause people
+            whose group or institutional memberships have changed to be included.
+            By default, changes to institution names do not propagate to people.
+          required: false
+          schema:
+            type: boolean
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The modified people (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/search':
+    get:
+      tags:
+        - person
+      summary: Search for people using a free text query string.
+      description: |-
+        Search for people using a free text query string. This is the same
+        search function that is used in the Lookup web application.
+        
+        By default, only a few basic details about each person are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references.
+        
+        NOTE: If the query string starts with the prefix `"person:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` and `attributes` parameters, but
+        it will respect the values of `includeCancelled` and
+        `misStatus`. In addition, an LQL query will ignore the
+        `orderBy` parameter, since LQL queries always return
+        results in ID order.
+      operationId: Person_search
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled people to
+            be included (people who are no longer members of the University).
+            Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: misStatus
+          in: query
+          description: |-
+            The type of people to search for. This may
+            be
+            
+            * `"staff"` - only include people whose MIS status is
+              `""` (empty string), `"staff"`, or
+              `"staff,student"`.
+            
+            * `"student"` - only include people whose MIS status is set to
+              `"student"` or `"staff,student"`.
+            
+            Otherwise all matching people will be included (the default). Note
+            that the `"staff"` and `"student"` options are not
+            mutually exclusive.
+          required: false
+          schema:
+            type: string
+        - name: attributes
+          in: query
+          description: |-
+            A comma-separated list of attributes to
+            consider when searching. If this is `null` (the default) then
+            all attribute schemes marked as searchable will be included. This is
+            ignored for LQL queries.
+          required: false
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: |-
+            The number of results to skip at the start
+            of the search. Defaults to 0.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: |-
+            The maximum number of results to return.
+            Defaults to 100.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: orderBy
+          in: query
+          description: |-
+            The order in which to list the results.
+            This may be either `"identifier"` or `"surname"` (the
+            default for non-LQL queries). This is ignored for LQL queries, which
+            always return results in identifier order.
+          required: false
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The matching people.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/search-count':
+    get:
+      tags:
+        - person
+      summary: |-
+        Count the number of people that would be returned by a search using
+        a free text query string.
+      description: |-
+        Count the number of people that would be returned by a search using
+        a free text query string.
+        
+        NOTE: If the query string starts with the prefix `"person:"`, it
+        is treated as an [LQL query](/lql), allowing
+        more advanced searches. An LQL query will ignore the
+        `approxMatches` and `attributes` parameters, but
+        it will respect the values of `includeCancelled` and
+        `misStatus`.
+      operationId: Person_searchCount
+      parameters:
+        - name: query
+          in: query
+          description: The search string.
+          required: true
+          schema:
+            type: string
+        - name: approxMatches
+          in: query
+          description: |-
+            Flag to enable more approximate
+            matching in the search, causing more results to be returned. Defaults
+            to `false`. This is ignored for LQL queries.
+          required: false
+          schema:
+            type: boolean
+        - name: includeCancelled
+          in: query
+          description: |-
+            Flag to allow cancelled people to
+            be included (people who are no longer members of the University).
+            Defaults to `false`.
+          required: false
+          schema:
+            type: boolean
+        - name: misStatus
+          in: query
+          description: |-
+            The type of people to search for. This may
+            be
+            
+            * `"staff"` - only include people whose MIS status is
+              `""` (empty string), `"staff"`, or
+              `"staff,student"`.
+            
+            * `"student"` - only include people whose MIS status is set to
+              `"student"` or `"staff,student"`.
+            
+            Otherwise all matching people will be included (the default). Note
+            that the `"staff"` and `"student"` options are not
+            mutually exclusive.
+          required: false
+          schema:
+            type: string
+        - name: attributes
+          in: query
+          description: |-
+            A comma-separated list of attributes to
+            consider when searching. If this is `null` (the default) then
+            all attribute schemes marked as searchable will be included. This is
+            ignored for LQL queries.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The number of matching people.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}':
+    get:
+      tags:
+        - person
+      summary: Get the person with the specified identifier.
+      description: |-
+        Get the person with the specified identifier.
+        
+        By default, only a few basic details about the person are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of the person.
+        
+        NOTE: The person returned may be a cancelled person. It is the
+        caller's repsonsibility to check its cancelled flag.
+      operationId: Person_getPerson
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes
+            such as `"usn"` or `"staffNumber"` may be available.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person to fetch
+            (typically their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested person or `null` if they were not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      person:
+                        $ref: '#/components/schemas/Person'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/get-attributes':
+    get:
+      tags:
+        - person
+      summary: Get one or more (possibly multi-valued) attributes of a person.
+      description: |-
+        Get one or more (possibly multi-valued) attributes of a person. The
+        returned attributes are sorted by attribute scheme precedence and
+        then attribute precedence.
+      operationId: Person_getAttributes
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: attrs
+          in: query
+          description: |-
+            The attribute scheme(s) to fetch. This may
+            include any number of the attributes or pseudo-attributes, but it
+            may not include references or attribute chains (see the documentation
+            for the `fetch` parameter in this class).
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The requested attributes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attributes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Attribute'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/groups':
+    get:
+      tags:
+        - person
+      summary: |-
+        Get all the groups to which the specified person belongs, including
+        indirect group memberships, via groups that include other groups.
+      description: |-
+        Get all the groups to which the specified person belongs, including
+        indirect group memberships, via groups that include other groups.
+        The returned list of groups is sorted by groupid.
+        
+        Note that some group memberships may not be visible to you. This
+        method will only return those group memberships that you have
+        permission to see.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each group.
+        
+        NOTE: This method will not include cancelled groups.
+      operationId: Person_getGroups
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The person's groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/insts':
+    get:
+      tags:
+        - person
+      summary: Get all the institutions to which the specified person belongs.
+      description: |-
+        Get all the institutions to which the specified person belongs. The
+        returned list of institutions is sorted by name.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references of each institution.
+        
+        NOTE: This method will not include cancelled institutions.
+      operationId: Person_getInsts
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The person's institutions (in name order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/is-member-of-group/{groupid}':
+    get:
+      tags:
+        - person
+      summary: Test if the specified person is a member of the specified group.
+      description: |-
+        Test if the specified person is a member of the specified group.
+        
+        NOTE: This may be used with cancelled people and groups.
+      operationId: Person_isMemberOfGroup
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: groupid
+          in: path
+          description: |-
+            The ID or name of the group.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            `true` if the specified person is in the specified
+            group, `false` otherwise (or if the person or group does not
+            exist).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: boolean
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/is-member-of-inst/{instid}':
+    get:
+      tags:
+        - person
+      summary: Test if the specified person is a member of the specified institution.
+      description: |-
+        Test if the specified person is a member of the specified institution.
+        
+        NOTE: This may be used with cancelled people and institutions, but
+        it will not include cancelled membership groups.
+      operationId: Person_isMemberOfInst
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: instid
+          in: path
+          description: |-
+            The ID of the institution.
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            `true` if the specified person is in the specified
+            institution, `false` otherwise (or if the person or institution
+            does not exist).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: boolean
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/manages-groups':
+    get:
+      tags:
+        - person
+      summary: Get all the groups that the specified person has persmission to edit.
+      description: |-
+        Get all the groups that the specified person has persmission to edit.
+        The returned list of groups is sorted by groupid.
+        
+        Note that some group memberships may not be visible to you. This
+        method will only include groups for which you have persmission to
+        see the applicable manager group memberships.
+        
+        By default, only a few basic details about each group are returned,
+        but the optional `fetch` parameter may be used to fetch
+        additional attributes or references of each group.
+        
+        NOTE: This method will not include cancelled groups.
+      operationId: Person_getManagedGroups
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The groups that the person manages (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/manages-insts':
+    get:
+      tags:
+        - person
+      summary: |-
+        Get all the institutions that the specified person has permission to
+        edit.
+      description: |-
+        Get all the institutions that the specified person has permission to
+        edit. The returned list of institutions is sorted by name.
+        
+        Note that some group memberships may not be visible to you. This
+        method will only include institutions for which you have permission
+        to see the applicable editor group memberships.
+        
+        By default, only a few basic details about each institution are
+        returned, but the optional `fetch` parameter may be used
+        to fetch additional attributes or references of each institution.
+        
+        NOTE: This method will not include cancelled institutions.
+      operationId: Person_getManagedInsts
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: fetch
+          in: query
+          description: |-
+            A comma-separated list of any additional
+            attributes or references to fetch.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: |-
+            The institutions that the person manages (in name order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      institutions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Institution'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/person/{scheme}/{identifier}/{attrid}':
+    get:
+      tags:
+        - person
+      summary: Get a specific attribute of a person.
+      description: |-
+        Get a specific attribute of a person.
+      operationId: Person_getAttribute
+      parameters:
+        - name: scheme
+          in: path
+          description: |-
+            The person identifier scheme. Typically this
+            should be `"crsid"`, but other identifier schemes may be
+            available in the future, such as `"usn"` or
+            `"staffNumber"`.
+          required: true
+          schema:
+            type: string
+        - name: identifier
+          in: path
+          description: |-
+            The identifier of the person (typically
+            their CRSid).
+          required: true
+          schema:
+            type: string
+        - name: attrid
+          in: path
+          description: |-
+            The ID of the attribute to fetch.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: |-
+            The requested attribute.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      attribute:
+                        $ref: '#/components/schemas/Attribute'
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+  '/version':
+    get:
+      tags:
+        - ibis
+      summary: Get the current API version number.
+      description: |-
+        Get the current API version number.
+      operationId: Ibis_getVersion
+      responses:
+        200:
+          description: |-
+            The API version number string.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                    description: |-
+                      Class representing the top-level container for all XML and JSON results.
+                      This may be just a simple textual value or it may contain more complex
+                      entities such as people, institutions, groups, attributes, etc.
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    Attribute:
+      type: object
+      properties:
+        attrid:
+          type: integer
+          format: int64
+          description: |-
+            The unique internal identifier of the attribute.
+        scheme:
+          type: string
+          description: |-
+            The attribute's scheme.
+        value:
+          type: string
+          description: |-
+            The attribute's value (except for binary attributes).
+        comment:
+          type: string
+          description: |-
+            Any comment associated with the attribute.
+        instid:
+          type: string
+          description: |-
+            For a person attribute, the optional institution that the attribute
+            is associated with. This will not be set for institution attributes.
+        visibility:
+          type: string
+          description: |-
+            For a person attribute, it's visibility (`"private"`,
+            `"institution"`, `"university"` or `"world"`). This
+            will not be set for institution attributes.
+        effectiveFrom:
+          type: string
+          format: date-time
+          description: |-
+            For time-limited attributes, the date from which it takes effect.
+        effectiveTo:
+          type: string
+          format: date-time
+          description: |-
+            For time-limited attributes, the date after which it is no longer effective.
+        owningGroupid:
+          type: string
+          description: |-
+            For a person attribute, the ID of the group that owns it (typically
+            the user agent group that created it).
+      description: |-
+        Class representing an attribute of a person or institution returned by
+        the web service API. Note that for institution attributes, the instid,
+        visibility and owningGroupid fields will be `null`.
+    AttributeScheme:
+      type: object
+      properties:
+        schemeid:
+          type: string
+          description: |-
+            The unique identifier of the attribute scheme.
+        precedence:
+          type: integer
+          format: int32
+          description: |-
+            The attribute scheme's precedence. Methods that return or display
+            attributes sort the results primarily in order of increasing values
+            of attribute scheme precedence.
+        ldapName:
+          type: string
+          description: |-
+            The name of the attribute scheme in LDAP, if it is exported to LDAP.
+            Note that many attributes are not exported to LDAP, in which case
+            this name is typically just equal to the scheme's ID.
+        displayName:
+          type: string
+          description: |-
+            The display name for labelling attributes in this scheme.
+        dataType:
+          type: string
+          description: |-
+            The attribute scheme's datatype.
+        multiValued:
+          type: boolean
+          description: |-
+            Flag indicating whether attributes in this scheme can be multi-valued.
+        multiLined:
+          type: boolean
+          description: |-
+            Flag for textual attributes schemes indicating whether they are
+            multi-lined.
+        searchable:
+          type: boolean
+          description: |-
+            Flag indicating whether attributes of this scheme are searched by
+            the default search functionality.
+        regexp:
+          type: string
+          description: |-
+            For textual attributes, an optional regular expression that all
+            attributes in this scheme match.
+      description: |-
+        Class representing an attribute scheme. This may apply to attributes of
+        people or institutions.
+    ContactPhoneNumber:
+      type: object
+      properties:
+        phoneType:
+          type: string
+          description: |-
+            The phone number's type.
+        number:
+          type: string
+          description: The phone number.
+        comment:
+          type: string
+          description: |-
+            Any comment associated with the phone number.
+      description: |-
+        Class representing a phone number held on an institution contact row, for
+        use by the web service API.
+    ContactRow:
+      type: object
+      properties:
+        description:
+          type: string
+          description: |-
+            The contact row's text.
+        bold:
+          type: boolean
+          description: |-
+            Flag indicating if the contact row's text is normally displayed in
+            bold.
+        italic:
+          type: boolean
+          description: |-
+            Flag indicating if the contact row's text is normally displayed in
+            italics.
+        addresses:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of the contact row's addresses. This will always be non-null,
+            but may be an empty list.
+        emails:
+          type: array
+          items:
+            type: string
+          description: |-
+            A list of the contact row's email addresses. This will always be
+            non-null, but may be an empty list.
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: |-
+            A list of the people referred to by the contact row. This will always
+            be non-null, but may be an empty list.
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPhoneNumber'
+          description: |-
+            A list of the contact row's phone numbers. This will always be
+            non-null, but may be an empty list.
+        webPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactWebPage'
+          description: |-
+            A list of the contact row's web pages. This will always be non-null,
+            but may be an empty list.
+      description: |-
+        Class representing an institution contact row, for use by the web
+        services API.
+    ContactWebPage:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The web page's URL.
+        label:
+          type: string
+          description: |-
+            The web page's label (link text) if set.
+      description: |-
+        Class representing a web page referred to by an institution contact row,
+        for use by the web service API.
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: |-
+            The HTTP error status code.
+        code:
+          type: string
+          description: |-
+            A short textual description of the error status code.
+        message:
+          type: string
+          description: |-
+            A short textual description of the error message (typically one line).
+        details:
+          type: string
+          description: |-
+            The full details of the error (e.g., a Java stack trace).
+      description: |-
+        Class representing an error returned by the web service API.
+    Group:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: |-
+            Flag indicating if the group is cancelled.
+        groupid:
+          type: string
+          description: |-
+            The group's numeric ID (actually a string e.g., "100656").
+        name:
+          type: string
+          description: |-
+            The group's unique name (e.g., "cs-editors").
+        title:
+          type: string
+          description: The group's title.
+        description:
+          type: string
+          description: |-
+            The more detailed description of the group.
+        email:
+          type: string
+          description: |-
+            The group's email address.
+        membersOfInst:
+          allOf:
+            - $ref: '#/components/schemas/Institution'
+            - description: |-
+                The details of the institution for which this group forms all or
+                part of the membership. This will only be set for groups that are
+                membership groups of institutions if the `fetch` parameter
+                includes the `"members_of_inst"` option.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: |-
+            A list of the group's members, including (recursively) any members of
+            any included groups. This will only be populated if the
+            `fetch` parameter includes the `"all_members"`
+            option.
+        directMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: |-
+            A list of the group's direct members, not including any members
+            included via groups included by this group. This will only be
+            populated if the `fetch` parameter includes the
+            `"direct_members"` option.
+        owningInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: |-
+            A list of the institutions to which this group belongs. This will only
+            be populated if the `fetch` parameter includes the
+            `"owning_insts"` option.
+        managesInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: |-
+            A list of the institutions managed by this group. This will only be
+            populated if the `fetch` parameter includes the
+            `"manages_insts"` option.
+        managesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups managed by this group. This will only be
+            populated if the `fetch` parameter includes the
+            `"manages_groups"` option.
+        managedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that manage this group. This will only be
+            populated if the `fetch` parameter includes the
+            `"managed_by_groups"` option.
+        readsGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that this group has privileged access to. Members
+            of this group will be able to read the members of any of those groups,
+            regardless of the membership visibilities. This will only be populated
+            if the `fetch` parameter includes the
+            `"reads_groups"` option.
+        readByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that have privileged access to this group.
+            Members of those groups will be able to read the members of this
+            group, regardless of the membership visibilities. This will only be
+            populated if the `fetch` parameter includes the
+            `"read_by_groups"` option.
+        includesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups directly included in this group. Any members of
+            the included groups (and recursively any groups that they include)
+            will automatically be included in this group. This will only be
+            populated if the `fetch` parameter includes the
+            `"includes_groups"` option.
+        includedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that directly include this group. Any members of
+            this group will automatically be included in those groups (and
+            recursively in any groups that include those groups). This will only
+            be populated if the `fetch` parameter includes the
+            `"included_by_groups"` option.
+        id:
+          type: string
+          description: |-
+            An ID that can uniquely identify this group within the returned
+            XML/JSON document. This is only used in the flattened XML/JSON
+            representation (if the "flatten" parameter is specified).
+        ref:
+          type: string
+          description: |-
+            A reference (by id) to a group element in the XML/JSON document.
+            This is only used in the flattened XML/JSON representation (if the
+            "flatten" parameter is specified).
+      description: |-
+        Class representing a group returned by the web service API.
+    Identifier:
+      type: object
+      properties:
+        scheme:
+          type: string
+          description: |-
+            The identifier's scheme (e.g., "crsid").
+        value:
+          type: string
+          description: |-
+            The identifier's value in that scheme (e.g., a specific CRSid value).
+      description: |-
+        Class representing a person's identifier, for use by the web service API.
+    Institution:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: |-
+            Flag indicating if the institution is cancelled.
+        instid:
+          type: string
+          description: |-
+            The institution's unique ID (e.g., "CS").
+        name:
+          type: string
+          description: |-
+            The institution's name.
+        acronym:
+          type: string
+          description: |-
+            The institution's acronym, if set (e.g., "UCS").
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+          description: |-
+            A list of the institution's attributes. This will only be populated
+            if the `fetch` parameter includes the `"all_attrs"`
+            option, or any specific attribute schemes such as `"email"` or
+            `"address"`, or the special pseudo-attribute scheme
+            `"phone_numbers"`.
+        contactRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactRow'
+          description: |-
+            A list of the institution's contact rows. This will only be populated
+            if the `fetch` parameter includes the
+            `"contact_rows"` option.
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: |-
+            A list of the institution's members. This will only be populated if
+            the `fetch` parameter includes the `"all_members"`
+            option.
+        parentInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: |-
+            A list of the institution's parent institutions. This will only be
+            populated if the `fetch` parameter includes the
+            `"parent_insts"` option.
+            
+            NOTE: Currently all institutions have one parent, but in the future
+            institutions may have multiple parents.
+        childInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: |-
+            A list of the institution's child institutions. This will only be
+            populated if the `fetch` parameter includes the
+            `"child_insts"` option.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of all the groups that belong to the institution. This will
+            only be populated if the `fetch` parameter includes the
+            `"inst_groups"` option.
+        membersGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that form the institution's membership. This
+            will only be populated if the `fetch` parameter includes
+            the `"members_groups"` option.
+        managedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of the groups that manage this institution. This will only
+            be populated if the `fetch` parameter includes the
+            `"managed_by_groups"` option.
+        id:
+          type: string
+          description: |-
+            An ID that can uniquely identify this institution within the
+            returned XML/JSON document. This is only used in the flattened
+            XML/JSON representation (if the "flatten" parameter is specified).
+        ref:
+          type: string
+          description: |-
+            A reference (by id) to an institution element in the XML/JSON
+            document. This is only used in the flattened XML/JSON representation
+            (if the "flatten" parameter is specified).
+      description: |-
+        Class representing an institution returned by the web service API.
+    Person:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: |-
+            Flag indicating if the person is cancelled.
+        identifier:
+          allOf:
+            - $ref: '#/components/schemas/Identifier'
+            - description: |-
+                The person's primary identifier (typically their CRSid).
+        displayName:
+          type: string
+          description: |-
+            The person's display name (if visible).
+        registeredName:
+          type: string
+          description: |-
+            The person's registered name (if visible).
+        surname:
+          type: string
+          description: |-
+            The person's surname (if visible).
+        visibleName:
+          type: string
+          description: |-
+            The person's display name if that is visible, otherwise their
+            registered name if that is visible, otherwise their surname if
+            that is visible, otherwise the value of their primary identifier
+            (typically their CRSid) which is always visible.
+        misAffiliation:
+          type: string
+          description: |-
+            The person's MIS status (`"staff"`, `"student"`,
+            `"staff,student"` or `""`).
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+          description: |-
+            A list of the person's identifiers. This will only be populated if
+            the `fetch` parameter included the
+            `"all_identifiers"` option.
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+          description: |-
+            A list of the person's attributes. This will only be populated if the
+            `fetch` parameter includes the `"all_attrs"` option,
+            or any specific attribute schemes such as `"email"` or
+            `"title"`, or the special pseudo-attribute scheme
+            `"phone_numbers"`.
+        institutions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: |-
+            A list of all the institution's to which the person belongs. This
+            will only be populated if the `fetch` parameter includes
+            the `"all_insts"` option.
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of all the groups to which the person belongs, including
+            indirect group memberships, via groups that include other groups.
+            This will only be populated if the `fetch` parameter
+            includes the `"all_groups"` option.
+        directGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: |-
+            A list of all the groups that the person directly belongs to. This
+            does not include indirect group memberships - i.e., groups that
+            include these groups. This will only be populated if the
+            `fetch` parameter includes the `"direct_groups"`
+            option.
+        id:
+          type: string
+          description: |-
+            An ID that can uniquely identify this person within the returned
+            XML/JSON document. This is only used in the flattened XML/JSON
+            representation (if the "flatten" parameter is specified).
+        ref:
+          type: string
+          description: |-
+            A reference (by id) to a person element in the XML/JSON document.
+            This is only used in the flattened XML/JSON representation (if the
+            "flatten" parameter is specified).
+      description: |-
+        Class representing a person returned by the web service API. Note that
+        the identifier is the person's primary identifier (typically their CRSid),
+        regardless of which identifier was used to query for the person.
+  responses:
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                description: |-
+                  Class representing the top-level container for all XML and JSON results.
+                  This may be just a simple textual value or it may contain more complex
+                  entities such as people, institutions, groups, attributes, etc.
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+security:
+  - basicAuth: []
+tags:
+  - name: ibis
+    description: |-
+      Common methods for searching for objects in the Lookup/Ibis database.
+  - name: group
+    description: |-
+      Methods for querying and manipulating groups.
+      
+      #### The fetch parameter for groups
+      
+      All methods that return groups also accept an optional `fetch`
+      parameter that may be used to request additional information about the
+      groups returned. For more details about the general rules that apply to
+      the `fetch` parameter, refer to the `PersonMethods`
+      documentation.
+      
+      For groups the `fetch` parameter may be used to fetch references
+      to people, institutions or other groups. In each case, only non-cancelled
+      people, institutions and groups will be included when fetching references.
+      The following references are supported:
+      
+      * `"all_members"` - fetches all the people who are members of the
+        group, including members of groups included by the group, and groups
+        included by those groups, and so on.
+      
+      * `"direct_members"` - fetches all the people who are direct
+        members of the group, not taking into account any included groups.
+      
+      * `"members_of_inst"` - if the group is a membership group for an
+        institution, this fetches that institution.
+      
+      * `"owning_insts"` - fetches all the institutions to which the
+        group belongs.
+      
+      * `"manages_insts"` - fetches all the institutions that the group
+        manages. Typically this only applies to "Editor" groups.
+      
+      * `"manages_groups"` - fetches all the groups that this group
+        manages. Note that some groups are self-managed, so this may be a
+        self-reference.
+      
+      * `"managed_by_groups"` - fetches all the groups that manage this
+        group.
+      
+      * `"reads_groups"` - fetches all the groups that this group has
+        privileged access to. This means that members of this group can see the
+        members of the referenced groups regardless of the membership visibility
+        settings.
+      
+      * `"read_by_groups"` - fetches all the groups that have privileged
+        access to this group.
+      
+      * `"includes_groups"` - fetches all the groups included by this
+        group.
+      
+      * `"included_by_groups"` - fetches all the groups that include
+        this group.
+      
+      As with person `fetch` parameters, the references may be used
+      in a chain by using the "dot" notation to fetch additional information
+      about referenced people, institutions or groups. For example
+      `"all_members.email"` will fetch the email addresses of all members
+      of the group. For more information about what can be fetched from
+      referenced people and institutions, refer to the documentation for
+      `PersonMethods` and `InstitutionMethods`.
+  - name: institution
+    description: |-
+      Methods for querying and manipulating institutions.
+      
+      #### The fetch parameter for institutions
+      
+      All methods that return institutions also accept an optional
+      `fetch` parameter that may be used to request additional
+      information about the institutions returned. For more details about
+      the general rules that apply to the `fetch` parameter,
+      refer to the `PersonMethods` documentation.
+      
+      For institutions the `fetch` parameter may be used to fetch
+      any institution attribute by specifying the `schemeid` of an
+      institution attribute scheme. Examples include `"address"`,
+      `"jpegPhoto"`, `"universityPhone"`, `"instPhone"`,
+      `"landlinePhone"`, `"mobilePhone"`, `"faxNumber"`,
+      `"email"` and `"labeledURI"`. The full list (which may be
+      extended over time) may be obtained using `#allAttributeSchemes`.
+      
+      In addition the following pseudo-attributes are supported:
+      
+      * `"phone_numbers"` - fetches all phone numbers. This is
+        equivalent to
+        `"universityPhone,instPhone,landlinePhone,mobilePhone"`.
+      
+      * `"all_attrs"` - fetches all attributes from all institution
+        attribute schemes. This does not include references.
+      
+      * `"contact_rows"` - fetches all institution contact rows. Any
+        chained fetches from contact rows are used to fetch attributes from any
+        people referred to by the contact rows.
+      
+      The `fetch` parameter may also be used to fetch referenced
+      people, institutions or groups. This will only include references to
+      non-cancelled entities. The following references are supported:
+      
+      * `"all_members"` - fetches all the people who are members of the
+        institution.
+      
+      * `"parent_insts"` - fetches all the parent institutions. Note
+        that currently all institutions have only one parent, but this may change
+        in the future, and client applications should be prepared to handle
+        multiple parents.
+      
+      * `"child_insts"` - fetches all the child institutions.
+      
+      * `"inst_groups"` - fetches all the groups that belong to the
+        institution.
+      
+      * `"members_groups"` - fetches all the groups that form the
+        institution's membership list.
+      
+      * `"managed_by_groups"` - fetches all the groups that manage the
+        institution's data (commonly called "Editor" groups).
+      
+      As with person `fetch` parameters, the references may be used
+      in a chain by using the "dot" notation to fetch additional information
+      about referenced people, institutions or groups. For example
+      `"all_members.email"` will fetch the email addresses of all members
+      of the institution. For more information about what can be fetched from
+      referenced people and groups, refer to the documentation for
+      `PersonMethods` and `GroupMethods`.
+  - name: person
+    description: |-
+      Methods for querying and manipulating people.
+      
+      #### Notes on the fetch parameter
+      
+      All methods that return people, institutions or groups also accept an
+      optional `fetch` parameter that may be used to request
+      additional information about the entities returned. Without this
+      parameter, only a few basic details about each person, institution or
+      group are returned. The `fetch` parameter is quite flexible,
+      and may be used in a number of different ways:
+      
+      * **Attribute fetching**. Attributes may be fetched by specifying the
+        `schemeid` of an attribute scheme. For example to fetch a
+        person's email addresses, use the value `"email"`. For people common
+        attribute schemes include `"jpegPhoto"`, `"misAffiliation"`,
+        `"title"`, `"universityPhone"`, `"landlinePhone"`,
+        `"mobilePhone"`, `"pager"`, `"labeledURI"` and `"address"`.
+        The full list of person attribute schemes may be obtained using `#allAttributeSchemes`.
+      
+      * **Pseudo-attributes**. Certain special pseudo-attributes are defined
+        for convenience. For people, the following pseudo-attributes are supported:
+      
+        * `"phone_numbers"` - fetches all phone numbers. This is
+          equivalent to
+          `"universityPhone,instPhone,landlinePhone,mobilePhone,pager"`.
+      
+        * `"all_identifiers"` - fetches all identifiers. Currently people
+          only have CRSid identifiers, but in the future additional identifiers such
+          as USN or staffNumber may be added.
+      
+        * `"all_attrs"` - fetches all attributes from all person attribute
+          schemes. This does not include identifiers or references.
+      
+      * **Reference fetching**. For people, the following references are
+        supported (and will fetch only non-cancelled institutions and groups):
+      
+        * `"all_insts"` - fetches all the institutions to which the person
+          belongs (sorted in name order).
+      
+        * `"all_groups"` - fetches all the groups that the person is a
+          member of, including indirect group memberships, via groups that include
+          other groups.
+      
+        * `"direct_groups"` - fetches all the groups that the person is
+          directly a member of. This does not include indirect group memberships -
+          i.e., groups that include these groups.
+      
+      * **Chained reference fetching**. To fetch properties of referenced
+        objects, the "dot" notation may be used. For example, to fetch the email
+        addresses of all the institutions to which a person belongs, use
+        `"all_insts.email"`. Chains may include a number of reference
+        following steps, for example
+        `"all_insts.managed_by_groups.all_members.email"` will fetch all the
+        institutions to which the person belongs, all the groups that manage those
+        institutions, all the visible members of those groups and all the email
+        addresses of those managing group members. For more information about what
+        can be fetched from referenced institutions and groups, refer to the
+        documentation for `InstitutionMethods` and `GroupMethods`.
+      
+      Multiple values of the `fetch` parameter should be separated
+      by commas.
+      
+      #### Fetch parameter examples
+      
+      `fetch = "email"`
+      This fetches all the person's email addresses.
+      
+      `fetch = "title,address"`
+      This fetches all the person's titles (roles) and addresses.
+      
+      `fetch = "all_attrs"`
+      This fetches all the person's attributes.
+      
+      `fetch = "all_groups,all_insts"`
+      This fetches all the groups and institutions to which the person belongs.
+      
+      `fetch = "all_insts.parent_insts"`
+      This fetches all the person's institutions, and their parent institutions.
+      
+      `fetch = "all_insts.email,all_insts.all_members.email"`
+      This fetches all the person's institutions and their email addresses, and
+      all the members of those institutions, and the email addresses of all
+      those members.
+externalDocs:
+  description: More information
+  url: 'https://www.lookup.cam.ac.uk/doc/ws-doc'

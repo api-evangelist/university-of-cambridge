@@ -1,0 +1,12 @@
+{
+  "result": {
+    "group": {
+      "cancelled": false,
+      "groupid": "100656",
+      "name": "cs-editors",
+      "title": "Computer Science web editors",
+      "description": "Members able to edit the Computer Science departmental web pages.",
+      "email": "cs-editors@lists.cam.ac.uk"
+    }
+  }
+}

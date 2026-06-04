@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.lookup.cam.ac.uk/schema/institution.json",
+  "title": "Institution",
+  "description": "An institution record returned by the Cambridge Lookup/Ibis web service API.",
+  "type": "object",
+  "properties": {
+    "cancelled": {
+      "type": "boolean",
+      "description": "Flag indicating if the institution is cancelled."
+    },
+    "instid": {
+      "type": "string",
+      "description": "The institution's unique ID (e.g., \"CS\")."
+    },
+    "name": {
+      "type": "string",
+      "description": "The institution's name."
+    },
+    "acronym": {
+      "type": "string",
+      "description": "The institution's acronym, if set (e.g., \"UCS\")."
+    },
+    "attributes": {
+      "type": "array",
+      "items": { "$ref": "https://www.lookup.cam.ac.uk/schema/attribute.json" },
+      "description": "A list of the institution's attributes (only populated when requested via fetch)."
+    },
+    "members": {
+      "type": "array",
+      "items": { "$ref": "https://www.lookup.cam.ac.uk/schema/person.json" },
+      "description": "A list of the institution's members (only populated when fetch includes all_members)."
+    }
+  }
+}
