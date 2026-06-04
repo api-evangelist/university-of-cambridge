@@ -1,0 +1,128 @@
+aid: university-of-cambridge
+name: University of Cambridge
+description: >-
+  The University of Cambridge (founded 1209; QS World 2025 #5) is a public
+  collegiate research university with a real, documented developer footprint
+  operated mainly by University Information Services (UIS): a central API
+  Gateway / developer portal (developer.api.apps.cam.ac.uk) fronting
+  identity-oriented REST APIs, the long-standing Lookup/Ibis directory web
+  service, the Raven central authentication service (OAuth2 / OpenID Connect),
+  and the Apollo institutional repository (DSpace REST + OAI-PMH). UIS
+  open-source code is published on a self-hosted GitLab.
+type: Index
+position: Consumer
+access: 3rd-Party
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/university-of-cambridge/refs/heads/main/apis.yml
+tags:
+  - Education
+  - Higher Education
+  - University
+  - Research
+  - United Kingdom
+  - Identity
+  - API Gateway
+  - Developer Portal
+created: '2026-06-03'
+modified: '2026-06-03'
+specificationVersion: '0.19'
+apis:
+  - aid: university-of-cambridge:lookup
+    name: Lookup / Ibis Web Service API
+    description: >-
+      Read/write HTTP API over the University directory of people and
+      institutions. Returns XML, JSON, or text; path style
+      /person/crsid/{id}. Anonymous read-only within the Cambridge University
+      Data Network; HTTP Basic auth (group credentials) for external or
+      read-write access. Swagger 2.0 / OpenAPI 3.0 specs published, with
+      Java/Python/PHP client libraries.
+    humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
+    baseURL: https://www.lookup.cam.ac.uk/api/v1/
+    tags:
+      - Directory
+      - Identity
+      - REST
+      - OpenAPI
+    properties:
+      - type: Documentation
+        url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - aid: university-of-cambridge:raven
+    name: Raven Authentication (OAuth2 / OpenID Connect)
+    description: >-
+      The University's central web authentication service. Raven OAuth2
+      conforms to OpenID Connect; applications register client credentials to
+      authenticate Cambridge users. An identity/SSO interface rather than a
+      data REST API.
+    humanURL: https://docs.raven.cam.ac.uk/
+    tags:
+      - Identity
+      - Authentication
+      - OAuth2
+      - OpenID Connect
+      - SSO
+    properties:
+      - type: Documentation
+        url: https://docs.raven.cam.ac.uk/
+      - type: SignUp
+        url: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
+  - aid: university-of-cambridge:gateway
+    name: Cambridge API Gateway (Card / Student / HR)
+    description: >-
+      UIS API Gateway (ALPHA) publishing read-oriented REST APIs — University
+      Card, University Student (CamSIS-sourced), and University Human Resources
+      (CHRIS-sourced). Interactive "try this API" docs on the developer
+      portal. Student and HR APIs are documented as ALPHA and not under active
+      development.
+    humanURL: https://developer.api.apps.cam.ac.uk/
+    baseURL: https://api.apps.cam.ac.uk/
+    tags:
+      - Identity
+      - Students
+      - Human Resources
+      - REST
+      - API Gateway
+    properties:
+      - type: Documentation
+        url: https://developer.api.apps.cam.ac.uk/
+      - type: DeveloperPortal
+        url: https://guidebook.devops.uis.cam.ac.uk/services/api-gateway/
+  - aid: university-of-cambridge:apollo
+    name: Apollo Institutional Repository API (DSpace)
+    description: >-
+      Cambridge's open-access research repository (Apollo) on the DSpace
+      platform, exposing OAI-PMH metadata harvesting and a DSpace REST API.
+      Managed by Cambridge University Library Open Research Systems.
+    humanURL: https://www.repository.cam.ac.uk/
+    baseURL: https://api.repository.cam.ac.uk/server/
+    tags:
+      - Repository
+      - Open Access
+      - DSpace
+      - OAI-PMH
+    properties:
+      - type: Documentation
+        url: https://www.re3data.org/repository/r3d100010620
+      - type: Website
+        url: https://www.repository.cam.ac.uk/
+common:
+  - type: Website
+    url: https://www.cam.ac.uk/
+  - type: DeveloperPortal
+    url: https://developer.api.apps.cam.ac.uk/
+  - type: SourceCode
+    url: https://gitlab.developers.cam.ac.uk/
+  - type: Twitter
+    url: https://x.com/Cambridge_Uni
+  - type: LinkedIn
+    url: https://www.linkedin.com/school/university-of-cambridge/
+  - type: Plans
+    url: plans/university-of-cambridge-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/university-of-cambridge-rate-limits.yml
+  - type: FinOps
+    url: finops/university-of-cambridge-finops.yml
+  - type: Review
+    url: review.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

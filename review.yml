@@ -1,0 +1,41 @@
+name: University of Cambridge
+description: University of Cambridge public developer/API footprint review for APIs.json cataloging.
+url: https://raw.githubusercontent.com/api-evangelist/university-of-cambridge/refs/heads/main/review.yml
+created: '2026-06-03'
+modified: '2026-06-03'
+reviews:
+  - date: '2026-06-03'
+    rating: 4
+    summary: >-
+      Cambridge has a genuine, documented developer program run by University Information
+      Services. Verified live: the Lookup/Ibis directory web service (lookup.cam.ac.uk,
+      with published Swagger/OpenAPI and Java/Python/PHP clients), the Raven central
+      authentication service (OAuth2 / OpenID Connect, docs.raven.cam.ac.uk), the UIS API
+      Gateway developer portal (developer.api.apps.cam.ac.uk, a JS SPA fronting Card,
+      Student, and HR APIs), and the Apollo institutional repository OAI-PMH endpoint
+      (api.repository.cam.ac.uk, returned a valid DSpace OAI response). The gateway's
+      Student and HR APIs are documented as ALPHA and not under active development. UIS
+      open-source code has migrated from GitHub (uisautomation, now 404) to a self-hosted
+      GitLab. No public API-platform status page was located.
+    endpoints:
+      - url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+        status: 200
+        note: Lookup/Ibis web service docs; OpenAPI + client libraries.
+      - url: https://docs.raven.cam.ac.uk/
+        status: 200
+        note: Raven OAuth2 / OpenID Connect authentication docs.
+      - url: https://developer.api.apps.cam.ac.uk/
+        status: 200
+        note: UIS API Gateway developer portal (JS SPA); Card/Student/HR APIs, ALPHA.
+      - url: https://api.repository.cam.ac.uk/server/oai/request
+        status: 200
+        note: Apollo repository OAI-PMH — Identify returned valid DSpace response.
+      - url: https://gitlab.developers.cam.ac.uk/
+        status: 200
+        note: Canonical UIS source-code home.
+      - url: https://github.com/uisautomation
+        status: 404
+        note: Former UIS GitHub org — migrated to GitLab; do not cite as live.
+      - url: https://status.apps.cam.ac.uk/
+        status: 0
+        note: No public API-platform status page resolves.
