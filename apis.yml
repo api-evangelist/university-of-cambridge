@@ -78,7 +78,7 @@ apis:
     properties:
       - type: Documentation
         url: https://docs.raven.cam.ac.uk/
-      - type: SignUp
+      - type: Signup
         url: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
   - aid: university-of-cambridge:gateway
     name: Cambridge API Gateway (Card / Student / HR)
