@@ -1,0 +1,27 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.cam.ac.uk
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 26 08:04:12 2026 GMT
+  hsts: true
+  hsts_max_age: 2592000
+- host: www.lookup.cam.ac.uk
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Dec 11 23:59:59 2026 GMT
+  hsts: null
+- host: docs.raven.cam.ac.uk
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  2 17:28:33 2026 GMT
+  hsts: false
+domains:
+- domain: cam.ac.uk
+  dnssec: true
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject

@@ -120,6 +120,10 @@ apis:
       - type: Website
         url: https://www.repository.cam.ac.uk/
 common:
+  - type: DomainSecurity
+    url: security/university-of-cambridge-domain-security.yml
+  - type: Authentication
+    url: authentication/university-of-cambridge-authentication.yml
   - type: Website
     url: https://www.cam.ac.uk/
   - type: DeveloperPortal
@@ -138,6 +142,8 @@ common:
     url: finops/university-of-cambridge-finops.yml
   - type: Review
     url: review.yml
+  - url: https://www.cam.ac.uk/rss/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
