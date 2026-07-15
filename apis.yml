@@ -120,6 +120,8 @@ apis:
       - type: Website
         url: https://www.repository.cam.ac.uk/
 common:
+  - type: AgenticAccess
+    url: agentic-access/university-of-cambridge-agentic-access.yml
   - type: DomainSecurity
     url: security/university-of-cambridge-domain-security.yml
   - type: Authentication
