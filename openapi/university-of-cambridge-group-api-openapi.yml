@@ -1,0 +1,1287 @@
+openapi: 3.0.0
+info:
+  title: Lookup/Ibis web service group API
+  version: '1.2'
+  description: "Methods for querying and manipulating groups.\n\n#### The fetch parameter for groups\n\nAll methods that return groups also accept an optional `fetch`\nparameter that may be used to request additional information about the\ngroups returned. For more details about the general rules that apply to\nthe `fetch` parameter, refer to the `PersonMethods`\ndocumentation.\n\nFor groups the `fetch` parameter may be used to fetch references\nto people, institutions or other groups. In each case, only non-cancelled\npeople, institutions and groups will be included when fetching references.\nThe following references are supported:\n\n* `\"all_members\"` - fetches all the people who are members of the\n  group, including members of groups included by the group, and groups\n  included by those groups, and so on.\n\n* `\"direct_members\"` - fetches all the people who are direct\n  members of the group, not taking into account any included groups.\n\n* `\"members_of_inst\"` - if the group is a membership group for an\n  institution, this fetches that institution.\n\n* `\"owning_insts\"` - fetches all the institutions to which the\n  group belongs.\n\n* `\"manages_insts\"` - fetches all the institutions that the group\n  manages. Typically this only applies to \"Editor\" groups.\n\n* `\"manages_groups\"` - fetches all the groups that this group\n  manages. Note that some groups are self-managed, so this may be a\n  self-reference.\n\n* `\"managed_by_groups\"` - fetches all the groups that manage this\n  group.\n\n* `\"reads_groups\"` - fetches all the groups that this group has\n  privileged access to. This means that members of this group can see the\n  members of the referenced groups regardless of the membership visibility\n  settings.\n\n* `\"read_by_groups\"` - fetches all the groups that have privileged\n  access to this group.\n\n* `\"includes_groups\"` - fetches all the groups included by this\n  group.\n\n* `\"included_by_groups\"` - fetches all the groups that include\n  this group.\n\nAs with person `fetch` parameters, the references may be used\nin a chain by using the \"dot\" notation to fetch additional information\nabout referenced people, institutions or groups. For example\n`\"all_members.email\"` will fetch the email addresses of all members\nof the group. For more information about what can be fetched from\nreferenced people and institutions, refer to the documentation for\n`PersonMethods` and `InstitutionMethods`."
+servers:
+- url: https://lookup-test.srv.uis.cam.ac.uk/api/v1
+  description: Test server
+- url: https://www.lookup.cam.ac.uk/api/v1
+  description: Live server
+security:
+- basicAuth: []
+tags:
+- name: group
+  description: "Methods for querying and manipulating groups.\n\n#### The fetch parameter for groups\n\nAll methods that return groups also accept an optional `fetch`\nparameter that may be used to request additional information about the\ngroups returned. For more details about the general rules that apply to\nthe `fetch` parameter, refer to the `PersonMethods`\ndocumentation.\n\nFor groups the `fetch` parameter may be used to fetch references\nto people, institutions or other groups. In each case, only non-cancelled\npeople, institutions and groups will be included when fetching references.\nThe following references are supported:\n\n* `\"all_members\"` - fetches all the people who are members of the\n  group, including members of groups included by the group, and groups\n  included by those groups, and so on.\n\n* `\"direct_members\"` - fetches all the people who are direct\n  members of the group, not taking into account any included groups.\n\n* `\"members_of_inst\"` - if the group is a membership group for an\n  institution, this fetches that institution.\n\n* `\"owning_insts\"` - fetches all the institutions to which the\n  group belongs.\n\n* `\"manages_insts\"` - fetches all the institutions that the group\n  manages. Typically this only applies to \"Editor\" groups.\n\n* `\"manages_groups\"` - fetches all the groups that this group\n  manages. Note that some groups are self-managed, so this may be a\n  self-reference.\n\n* `\"managed_by_groups\"` - fetches all the groups that manage this\n  group.\n\n* `\"reads_groups\"` - fetches all the groups that this group has\n  privileged access to. This means that members of this group can see the\n  members of the referenced groups regardless of the membership visibility\n  settings.\n\n* `\"read_by_groups\"` - fetches all the groups that have privileged\n  access to this group.\n\n* `\"includes_groups\"` - fetches all the groups included by this\n  group.\n\n* `\"included_by_groups\"` - fetches all the groups that include\n  this group.\n\nAs with person `fetch` parameters, the references may be used\nin a chain by using the \"dot\" notation to fetch additional information\nabout referenced people, institutions or groups. For example\n`\"all_members.email\"` will fetch the email addresses of all members\nof the group. For more information about what can be fetched from\nreferenced people and institutions, refer to the documentation for\n`PersonMethods` and `InstitutionMethods`."
+paths:
+  /group/all-groups:
+    get:
+      tags:
+      - group
+      summary: Return a list of all groups.
+      description: 'Return a list of all groups.
+
+
+        By default, only a few basic details about each group are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references.'
+      operationId: Group_allGroups
+      parameters:
+      - name: includeCancelled
+        in: query
+        description: 'Whether or not to include cancelled
+
+          groups. By default, only live groups are returned.'
+        required: false
+        schema:
+          type: boolean
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The requested groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/list:
+    get:
+      tags:
+      - group
+      summary: Get the groups with the specified IDs or names.
+      description: 'Get the groups with the specified IDs or names.
+
+
+        By default, only a few basic details about each group are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references.
+
+
+        The results are sorted by groupid.
+
+
+        NOTE: The URL path length is limited to around 8000 characters,
+
+        which limits the number of groups that this method can fetch. Group
+
+        IDs are currently 6 characters long, and must be comma separated and
+
+        URL encoded, which limits this method to around 800 groups by ID,
+
+        but probably fewer by name, depending on the group name lengths.
+
+
+        NOTE: The groups returned may include cancelled groups. It is the
+
+        caller''s responsibility to check their cancelled flags.'
+      operationId: Group_listGroups
+      parameters:
+      - name: groupids
+        in: query
+        description: 'A comma-separated list of group IDs or
+
+          group names (may be a mix of both).'
+        required: true
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The requested groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/modified-groups:
+    get:
+      tags:
+      - group
+      summary: Find all groups modified between the specified pair of transactions.
+      description: 'Find all groups modified between the specified pair of transactions.
+
+
+        The transaction IDs specified should be the IDs from two different
+
+        requests for the last (most recent) transaction ID, made at different
+
+        times, that returned different values, indicating that some Lookup
+
+        data was modified in the period between the two requests. This method
+
+        then determines which (if any) groups were affected.
+
+
+        By default, only a few basic details about each group are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references.
+
+
+        NOTE: All data returned reflects the latest available data about each
+
+        group. It is not possible to query for old data, or more detailed
+
+        information about the specific changes made.'
+      operationId: Group_modifiedGroups
+      parameters:
+      - name: minTxId
+        in: query
+        description: 'Include modifications made in transactions
+
+          after (but not including) this one.'
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: maxTxId
+        in: query
+        description: 'Include modifications made in transactions
+
+          up to and including this one.'
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: groupids
+        in: query
+        description: 'Only include groups with IDs or names in
+
+          this list. By default, all modified groups will be included.'
+        required: false
+        schema:
+          type: string
+      - name: includeCancelled
+        in: query
+        description: 'Include cancelled groups. By
+
+          default, cancelled groups are excluded.'
+        required: false
+        schema:
+          type: boolean
+      - name: membershipChanges
+        in: query
+        description: 'Include groups whose members have
+
+          changed. By default, changes to group memberships are not taken into
+
+          consideration.'
+        required: false
+        schema:
+          type: boolean
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The modified groups (in groupid order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/search:
+    get:
+      tags:
+      - group
+      summary: Search for groups using a free text query string.
+      description: 'Search for groups using a free text query string. This is the same
+
+        search function that is used in the Lookup web application.
+
+
+        By default, only a few basic details about each group are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references.
+
+
+        NOTE: If the query string starts with the prefix `"group:"`, it
+
+        is treated as an [LQL query](/lql), allowing
+
+        more advanced searches. An LQL query will ignore the
+
+        `approxMatches` parameter, but it will respect the value of
+
+        `includeCancelled`. In addition, an LQL query will ignore
+
+        the `orderBy` parameter, since LQL queries always return
+
+        results in ID order.'
+      operationId: Group_search
+      parameters:
+      - name: query
+        in: query
+        description: The search string.
+        required: true
+        schema:
+          type: string
+      - name: approxMatches
+        in: query
+        description: 'Flag to enable more approximate
+
+          matching in the search, causing more results to be returned. Defaults
+
+          to `false`. This is ignored for LQL queries.'
+        required: false
+        schema:
+          type: boolean
+      - name: includeCancelled
+        in: query
+        description: 'Flag to allow cancelled groups to
+
+          be included. Defaults to `false`.'
+        required: false
+        schema:
+          type: boolean
+      - name: offset
+        in: query
+        description: 'The number of results to skip at the start
+
+          of the search. Defaults to 0.'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: 'The maximum number of results to return.
+
+          Defaults to 100.'
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: orderBy
+        in: query
+        description: 'The order in which to list the results.
+
+          This may be `"groupid"`, `"name"` (the default for non-LQL
+
+          queries) or `"title"`. This is ignored for LQL queries, which
+
+          always return results in groupid order.'
+        required: false
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The matching groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/search-count:
+    get:
+      tags:
+      - group
+      summary: 'Count the number of groups that would be returned by a search using
+
+        a free text query string.'
+      description: 'Count the number of groups that would be returned by a search using
+
+        a free text query string.
+
+
+        NOTE: If the query string starts with the prefix `"group:"`, it
+
+        is treated as an [LQL query](/lql), allowing
+
+        more advanced searches. An LQL query will ignore the
+
+        `approxMatches` parameter, but it will respect the value of
+
+        `includeCancelled`.'
+      operationId: Group_searchCount
+      parameters:
+      - name: query
+        in: query
+        description: The search string.
+        required: true
+        schema:
+          type: string
+      - name: approxMatches
+        in: query
+        description: 'Flag to enable more approximate
+
+          matching in the search, causing more results to be returned. Defaults
+
+          to `false`. This is ignored for LQL queries.'
+        required: false
+        schema:
+          type: boolean
+      - name: includeCancelled
+        in: query
+        description: 'Flag to allow cancelled groups to
+
+          be included. Defaults to `false`.'
+        required: false
+        schema:
+          type: boolean
+      responses:
+        200:
+          description: The number of matching groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: integer
+                        format: int32
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/{groupid}:
+    get:
+      tags:
+      - group
+      summary: Get the group with the specified ID or name.
+      description: 'Get the group with the specified ID or name.
+
+
+        By default, only a few basic details about the group are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references of the group.
+
+
+        NOTE: The group returned may be a cancelled group. It is the caller''s
+
+        responsibility to check its cancelled flag.'
+      operationId: Group_getGroup
+      parameters:
+      - name: groupid
+        in: path
+        description: 'The ID or name of the group to fetch. This
+
+          may be either the numeric ID or the short hyphenated group name (for
+
+          example `"100656"` or `"cs-editors"`).'
+        required: true
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The requested group or `null` if it was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      group:
+                        $ref: '#/components/schemas/Group'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/{groupid}/cancelled-members:
+    get:
+      tags:
+      - group
+      summary: 'Get all the cancelled members of the specified group, including
+
+        cancelled members of groups included by the group, and groups included
+
+        by those groups, and so on.'
+      description: 'Get all the cancelled members of the specified group, including
+
+        cancelled members of groups included by the group, and groups included
+
+        by those groups, and so on.
+
+
+        By default, only a few basic details about each member are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references of each person.
+
+
+        NOTE: This method returns only cancelled people. It does not include
+
+        people who were removed from the group. Cancelled people are no longer
+
+        considered to be current staff, students or accredited visitors, and
+
+        are no longer regarded as belonging to any groups or institutions. The
+
+        list returned here reflects their group memberships just before they
+
+        were cancelled, and so is out-of-date data that should be used with
+
+        caution.'
+      operationId: Group_getCancelledMembers
+      parameters:
+      - name: groupid
+        in: path
+        description: The ID or name of the group.
+        required: true
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch for each person.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The group's cancelled members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/{groupid}/direct-members:
+    get:
+      tags:
+      - group
+      summary: 'Get the direct members of the specified group, not including members
+
+        included via groups included by the group.'
+      description: 'Get the direct members of the specified group, not including members
+
+        included via groups included by the group.
+
+
+        By default, only a few basic details about each member are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references of each person.
+
+
+        NOTE: This method will not include cancelled people.'
+      operationId: Group_getDirectMembers
+      parameters:
+      - name: groupid
+        in: path
+        description: The ID or name of the group.
+        required: true
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch for each person.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The group's direct members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/{groupid}/members:
+    get:
+      tags:
+      - group
+      summary: 'Get all the members of the specified group, including members of
+
+        groups included by the group, and groups included by those groups,
+
+        and so on.'
+      description: 'Get all the members of the specified group, including members of
+
+        groups included by the group, and groups included by those groups,
+
+        and so on.
+
+
+        By default, only a few basic details about each member are returned,
+
+        but the optional `fetch` parameter may be used to fetch
+
+        additional attributes or references of each person.
+
+
+        NOTE: This method will not include cancelled people.'
+      operationId: Group_getMembers
+      parameters:
+      - name: groupid
+        in: path
+        description: The ID or name of the group.
+        required: true
+        schema:
+          type: string
+      - name: fetch
+        in: query
+        description: 'A comma-separated list of any additional
+
+          attributes or references to fetch for each person.'
+        required: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: The group's members (in identifier order).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      people:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Person'
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+  /group/{groupid}/token:
+    get:
+      tags:
+      - group
+      summary: 'Get a signed JSON Web Token (JWT) with the group as subject and
+
+        specified audience, only if authorized user/group has permission to edit
+
+        the group.'
+      description: 'Get a signed JSON Web Token (JWT) with the group as subject and
+
+        specified audience, only if authorized user/group has permission to edit
+
+        the group.'
+      operationId: Group_getToken
+      parameters:
+      - name: groupid
+        in: path
+        description: The ID of the group.
+        required: true
+        schema:
+          type: string
+      - name: aud
+        in: query
+        description: Audience for the signed JWT.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: The serialized JWT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: object
+                    properties:
+                      value:
+                        type: string
+                    description: 'Class representing the top-level container for all XML and JSON results.
+
+                      This may be just a simple textual value or it may contain more complex
+
+                      entities such as people, institutions, groups, attributes, etc.'
+        default:
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    Identifier:
+      type: object
+      properties:
+        scheme:
+          type: string
+          description: The identifier's scheme (e.g., "crsid").
+        value:
+          type: string
+          description: The identifier's value in that scheme (e.g., a specific CRSid value).
+      description: Class representing a person's identifier, for use by the web service API.
+    ContactRow:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The contact row's text.
+        bold:
+          type: boolean
+          description: 'Flag indicating if the contact row''s text is normally displayed in
+
+            bold.'
+        italic:
+          type: boolean
+          description: 'Flag indicating if the contact row''s text is normally displayed in
+
+            italics.'
+        addresses:
+          type: array
+          items:
+            type: string
+          description: 'A list of the contact row''s addresses. This will always be non-null,
+
+            but may be an empty list.'
+        emails:
+          type: array
+          items:
+            type: string
+          description: 'A list of the contact row''s email addresses. This will always be
+
+            non-null, but may be an empty list.'
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the people referred to by the contact row. This will always
+
+            be non-null, but may be an empty list.'
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPhoneNumber'
+          description: 'A list of the contact row''s phone numbers. This will always be
+
+            non-null, but may be an empty list.'
+        webPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactWebPage'
+          description: 'A list of the contact row''s web pages. This will always be non-null,
+
+            but may be an empty list.'
+      description: 'Class representing an institution contact row, for use by the web
+
+        services API.'
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP error status code.
+        code:
+          type: string
+          description: A short textual description of the error status code.
+        message:
+          type: string
+          description: A short textual description of the error message (typically one line).
+        details:
+          type: string
+          description: The full details of the error (e.g., a Java stack trace).
+      description: Class representing an error returned by the web service API.
+    Attribute:
+      type: object
+      properties:
+        attrid:
+          type: integer
+          format: int64
+          description: The unique internal identifier of the attribute.
+        scheme:
+          type: string
+          description: The attribute's scheme.
+        value:
+          type: string
+          description: The attribute's value (except for binary attributes).
+        comment:
+          type: string
+          description: Any comment associated with the attribute.
+        instid:
+          type: string
+          description: 'For a person attribute, the optional institution that the attribute
+
+            is associated with. This will not be set for institution attributes.'
+        visibility:
+          type: string
+          description: 'For a person attribute, it''s visibility (`"private"`,
+
+            `"institution"`, `"university"` or `"world"`). This
+
+            will not be set for institution attributes.'
+        effectiveFrom:
+          type: string
+          format: date-time
+          description: For time-limited attributes, the date from which it takes effect.
+        effectiveTo:
+          type: string
+          format: date-time
+          description: For time-limited attributes, the date after which it is no longer effective.
+        owningGroupid:
+          type: string
+          description: 'For a person attribute, the ID of the group that owns it (typically
+
+            the user agent group that created it).'
+      description: 'Class representing an attribute of a person or institution returned by
+
+        the web service API. Note that for institution attributes, the instid,
+
+        visibility and owningGroupid fields will be `null`.'
+    ContactWebPage:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The web page's URL.
+        label:
+          type: string
+          description: The web page's label (link text) if set.
+      description: 'Class representing a web page referred to by an institution contact row,
+
+        for use by the web service API.'
+    Person:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: Flag indicating if the person is cancelled.
+        identifier:
+          allOf:
+          - $ref: '#/components/schemas/Identifier'
+          - description: The person's primary identifier (typically their CRSid).
+        displayName:
+          type: string
+          description: The person's display name (if visible).
+        registeredName:
+          type: string
+          description: The person's registered name (if visible).
+        surname:
+          type: string
+          description: The person's surname (if visible).
+        visibleName:
+          type: string
+          description: 'The person''s display name if that is visible, otherwise their
+
+            registered name if that is visible, otherwise their surname if
+
+            that is visible, otherwise the value of their primary identifier
+
+            (typically their CRSid) which is always visible.'
+        misAffiliation:
+          type: string
+          description: 'The person''s MIS status (`"staff"`, `"student"`,
+
+            `"staff,student"` or `""`).'
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+          description: 'A list of the person''s identifiers. This will only be populated if
+
+            the `fetch` parameter included the
+
+            `"all_identifiers"` option.'
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+          description: 'A list of the person''s attributes. This will only be populated if the
+
+            `fetch` parameter includes the `"all_attrs"` option,
+
+            or any specific attribute schemes such as `"email"` or
+
+            `"title"`, or the special pseudo-attribute scheme
+
+            `"phone_numbers"`.'
+        institutions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of all the institution''s to which the person belongs. This
+
+            will only be populated if the `fetch` parameter includes
+
+            the `"all_insts"` option.'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of all the groups to which the person belongs, including
+
+            indirect group memberships, via groups that include other groups.
+
+            This will only be populated if the `fetch` parameter
+
+            includes the `"all_groups"` option.'
+        directGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of all the groups that the person directly belongs to. This
+
+            does not include indirect group memberships - i.e., groups that
+
+            include these groups. This will only be populated if the
+
+            `fetch` parameter includes the `"direct_groups"`
+
+            option.'
+        id:
+          type: string
+          description: 'An ID that can uniquely identify this person within the returned
+
+            XML/JSON document. This is only used in the flattened XML/JSON
+
+            representation (if the "flatten" parameter is specified).'
+        ref:
+          type: string
+          description: 'A reference (by id) to a person element in the XML/JSON document.
+
+            This is only used in the flattened XML/JSON representation (if the
+
+            "flatten" parameter is specified).'
+      description: 'Class representing a person returned by the web service API. Note that
+
+        the identifier is the person''s primary identifier (typically their CRSid),
+
+        regardless of which identifier was used to query for the person.'
+    Institution:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: Flag indicating if the institution is cancelled.
+        instid:
+          type: string
+          description: The institution's unique ID (e.g., "CS").
+        name:
+          type: string
+          description: The institution's name.
+        acronym:
+          type: string
+          description: The institution's acronym, if set (e.g., "UCS").
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+          description: 'A list of the institution''s attributes. This will only be populated
+
+            if the `fetch` parameter includes the `"all_attrs"`
+
+            option, or any specific attribute schemes such as `"email"` or
+
+            `"address"`, or the special pseudo-attribute scheme
+
+            `"phone_numbers"`.'
+        contactRows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactRow'
+          description: 'A list of the institution''s contact rows. This will only be populated
+
+            if the `fetch` parameter includes the
+
+            `"contact_rows"` option.'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the institution''s members. This will only be populated if
+
+            the `fetch` parameter includes the `"all_members"`
+
+            option.'
+        parentInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institution''s parent institutions. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"parent_insts"` option.
+
+
+            NOTE: Currently all institutions have one parent, but in the future
+
+            institutions may have multiple parents.'
+        childInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institution''s child institutions. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"child_insts"` option.'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of all the groups that belong to the institution. This will
+
+            only be populated if the `fetch` parameter includes the
+
+            `"inst_groups"` option.'
+        membersGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that form the institution''s membership. This
+
+            will only be populated if the `fetch` parameter includes
+
+            the `"members_groups"` option.'
+        managedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that manage this institution. This will only
+
+            be populated if the `fetch` parameter includes the
+
+            `"managed_by_groups"` option.'
+        id:
+          type: string
+          description: 'An ID that can uniquely identify this institution within the
+
+            returned XML/JSON document. This is only used in the flattened
+
+            XML/JSON representation (if the "flatten" parameter is specified).'
+        ref:
+          type: string
+          description: 'A reference (by id) to an institution element in the XML/JSON
+
+            document. This is only used in the flattened XML/JSON representation
+
+            (if the "flatten" parameter is specified).'
+      description: Class representing an institution returned by the web service API.
+    Group:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: Flag indicating if the group is cancelled.
+        groupid:
+          type: string
+          description: The group's numeric ID (actually a string e.g., "100656").
+        name:
+          type: string
+          description: The group's unique name (e.g., "cs-editors").
+        title:
+          type: string
+          description: The group's title.
+        description:
+          type: string
+          description: The more detailed description of the group.
+        email:
+          type: string
+          description: The group's email address.
+        membersOfInst:
+          allOf:
+          - $ref: '#/components/schemas/Institution'
+          - description: 'The details of the institution for which this group forms all or
+
+              part of the membership. This will only be set for groups that are
+
+              membership groups of institutions if the `fetch` parameter
+
+              includes the `"members_of_inst"` option.'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the group''s members, including (recursively) any members of
+
+            any included groups. This will only be populated if the
+
+            `fetch` parameter includes the `"all_members"`
+
+            option.'
+        directMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the group''s direct members, not including any members
+
+            included via groups included by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"direct_members"` option.'
+        owningInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institutions to which this group belongs. This will only
+
+            be populated if the `fetch` parameter includes the
+
+            `"owning_insts"` option.'
+        managesInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institutions managed by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"manages_insts"` option.'
+        managesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups managed by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"manages_groups"` option.'
+        managedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that manage this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"managed_by_groups"` option.'
+        readsGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that this group has privileged access to. Members
+
+            of this group will be able to read the members of any of those groups,
+
+            regardless of the membership visibilities. This will only be populated
+
+            if the `fetch` parameter includes the
+
+            `"reads_groups"` option.'
+        readByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that have privileged access to this group.
+
+            Members of those groups will be able to read the members of this
+
+            group, regardless of the membership visibilities. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"read_by_groups"` option.'
+        includesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups directly included in this group. Any members of
+
+            the included groups (and recursively any groups that they include)
+
+            will automatically be included in this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"includes_groups"` option.'
+        includedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that directly include this group. Any members of
+
+            this group will automatically be included in those groups (and
+
+            recursively in any groups that include those groups). This will only
+
+            be populated if the `fetch` parameter includes the
+
+            `"included_by_groups"` option.'
+        id:
+          type: string
+          description: 'An ID that can uniquely identify this group within the returned
+
+            XML/JSON document. This is only used in the flattened XML/JSON
+
+            representation (if the "flatten" parameter is specified).'
+        ref:
+          type: string
+          description: 'A reference (by id) to a group element in the XML/JSON document.
+
+            This is only used in the flattened XML/JSON representation (if the
+
+            "flatten" parameter is specified).'
+      description: Class representing a group returned by the web service API.
+    ContactPhoneNumber:
+      type: object
+      properties:
+        phoneType:
+          type: string
+          description: The phone number's type.
+        number:
+          type: string
+          description: The phone number.
+        comment:
+          type: string
+          description: Any comment associated with the phone number.
+      description: 'Class representing a phone number held on an institution contact row, for
+
+        use by the web service API.'
+  responses:
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                description: 'Class representing the top-level container for all XML and JSON results.
+
+                  This may be just a simple textual value or it may contain more complex
+
+                  entities such as people, institutions, groups, attributes, etc.'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+externalDocs:
+  description: More information
+  url: https://www.lookup.cam.ac.uk/doc/ws-doc
