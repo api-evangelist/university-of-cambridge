@@ -10,9 +10,22 @@ description: >-
   and the Apollo institutional repository (DSpace REST + OAI-PMH). UIS
   open-source code is published on a self-hosted GitLab.
 type: Index
+accessModel:
+  pricing: free
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Free · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 position: Consumer
 access: 3rd-Party
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/university-of-cambridge.png
 url: https://raw.githubusercontent.com/api-evangelist/university-of-cambridge/refs/heads/main/apis.yml
 tags:
   - Education
@@ -28,97 +41,425 @@ modified: '2026-06-03'
 # artifact pointers added for Lookup/Ibis OpenAPI 3.0 spec
 specificationVersion: '0.19'
 apis:
-  - aid: university-of-cambridge:lookup
-    name: Lookup / Ibis Web Service API
-    description: >-
-      Read/write HTTP API over the University directory of people and
-      institutions. Returns XML, JSON, or text; path style
-      /person/crsid/{id}. Anonymous read-only within the Cambridge University
-      Data Network; HTTP Basic auth (group credentials) for external or
-      read-write access. Swagger 2.0 / OpenAPI 3.0 specs published, with
-      Java/Python/PHP client libraries.
-    humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
-    baseURL: https://www.lookup.cam.ac.uk/api/v1/
-    tags:
-      - Directory
-      - Identity
-      - REST
-      - OpenAPI
-    properties:
-      - type: Documentation
-        url: https://www.lookup.cam.ac.uk/doc/ws-doc/
-      - type: OpenAPI
-        url: openapi/university-of-cambridge-lookup.yaml
-      - type: JSONSchema
-        url: json-schema/university-of-cambridge-person-schema.json
-      - type: x-json-structure
-        url: json-structure/university-of-cambridge-person-structure.json
-      - type: x-examples
-        url: examples/university-of-cambridge-person-example.json
-      - type: x-spectral-rules
-        url: rules/university-of-cambridge-rules.yml
-      - type: x-vocabulary
-        url: vocabulary/university-of-cambridge-vocabulary.yml
-      - type: x-json-ld-context
-        url: json-ld/university-of-cambridge-context.jsonld
-  - aid: university-of-cambridge:raven
-    name: Raven Authentication (OAuth2 / OpenID Connect)
-    description: >-
-      The University's central web authentication service. Raven OAuth2
-      conforms to OpenID Connect; applications register client credentials to
-      authenticate Cambridge users. An identity/SSO interface rather than a
-      data REST API.
-    humanURL: https://docs.raven.cam.ac.uk/
-    tags:
-      - Identity
-      - Authentication
-      - OAuth2
-      - OpenID Connect
-      - SSO
-    properties:
-      - type: Documentation
-        url: https://docs.raven.cam.ac.uk/
-      - type: Signup
-        url: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
-  - aid: university-of-cambridge:gateway
-    name: Cambridge API Gateway (Card / Student / HR)
-    description: >-
-      UIS API Gateway (ALPHA) publishing read-oriented REST APIs — University
-      Card, University Student (CamSIS-sourced), and University Human Resources
-      (CHRIS-sourced). Interactive "try this API" docs on the developer
-      portal. Student and HR APIs are documented as ALPHA and not under active
-      development.
-    humanURL: https://developer.api.apps.cam.ac.uk/
-    baseURL: https://api.apps.cam.ac.uk/
-    tags:
-      - Identity
-      - Students
-      - Human Resources
-      - REST
-      - API Gateway
-    properties:
-      - type: Documentation
-        url: https://developer.api.apps.cam.ac.uk/
-      - type: DeveloperPortal
-        url: https://guidebook.devops.uis.cam.ac.uk/services/api-gateway/
-  - aid: university-of-cambridge:apollo
-    name: Apollo Institutional Repository API (DSpace)
-    description: >-
-      Cambridge's open-access research repository (Apollo) on the DSpace
-      platform, exposing OAI-PMH metadata harvesting and a DSpace REST API.
-      Managed by Cambridge University Library Open Research Systems.
-    humanURL: https://www.repository.cam.ac.uk/
-    baseURL: https://api.repository.cam.ac.uk/server/
-    tags:
-      - Repository
-      - Open Access
-      - DSpace
-      - OAI-PMH
-    properties:
-      - type: Documentation
-        url: https://www.re3data.org/repository/r3d100010620
-      - type: Website
-        url: https://www.repository.cam.ac.uk/
+- aid: university-of-cambridge:raven
+  name: Raven Authentication (OAuth2 / OpenID Connect)
+  description: >-
+    The University's central web authentication service. Raven OAuth2 conforms to OpenID Connect; applications
+    register client credentials to authenticate Cambridge users. An identity/SSO interface rather than
+    a data REST API.
+  humanURL: https://docs.raven.cam.ac.uk/
+  tags:
+  - Identity
+  - Authentication
+  - OAuth2
+  - OpenID Connect
+  - SSO
+  properties:
+  - type: Documentation
+    url: https://docs.raven.cam.ac.uk/
+  - type: Signup
+    url: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
+- aid: university-of-cambridge:gateway
+  name: Cambridge API Gateway (Card / Student / HR)
+  description: >-
+    UIS API Gateway (ALPHA) publishing read-oriented REST APIs — University Card, University Student (CamSIS-sourced),
+    and University Human Resources (CHRIS-sourced). Interactive "try this API" docs on the developer portal.
+    Student and HR APIs are documented as ALPHA and not under active development.
+  humanURL: https://developer.api.apps.cam.ac.uk/
+  baseURL: https://api.apps.cam.ac.uk/
+  tags:
+  - Identity
+  - Students
+  - Human Resources
+  - REST
+  - API Gateway
+  properties:
+  - type: Documentation
+    url: https://developer.api.apps.cam.ac.uk/
+  - type: DeveloperPortal
+    url: https://guidebook.devops.uis.cam.ac.uk/services/api-gateway/
+- aid: university-of-cambridge:apollo
+  name: Apollo Institutional Repository API (DSpace)
+  description: >-
+    Cambridge's open-access research repository (Apollo) on the DSpace platform, exposing OAI-PMH metadata
+    harvesting and a DSpace REST API. Managed by Cambridge University Library Open Research Systems.
+  humanURL: https://www.repository.cam.ac.uk/
+  baseURL: https://api.repository.cam.ac.uk/server/
+  tags:
+  - Repository
+  - Open Access
+  - DSpace
+  - OAI-PMH
+  properties:
+  - type: Documentation
+    url: https://www.re3data.org/repository/r3d100010620
+  - type: Website
+    url: https://www.repository.cam.ac.uk/
+- aid: university-of-cambridge:university-of-cambridge-group-api
+  name: University of Cambridge group API
+  description: >-
+    Methods for querying and manipulating groups.
+
+
+    #### The fetch parameter for groups
+
+
+    All methods that return groups also accept an optional `fetch`
+
+    parameter that may be used to request additional information about the
+
+    groups returned. For more details about the general rules that apply to
+
+    the `fetch` parameter, refer to the `PersonMethods`
+
+    documentation.
+
+
+    For groups the `fetch` parameter may be used to fetch references
+
+    to people, institutions or other groups. In each case, only non-cancelled
+
+    people, institutions and groups will be included when fetching references.
+
+    The following references are supported:
+
+
+    * `"all_members"` - fetches all the people who are members of the
+      group, including members of groups included by the group, and groups
+      included by those groups, and so on.
+
+    * `"direct_members"` - fetches all the people who are direct
+      members of the group, not taking into account any included groups.
+
+    * `"members_of_inst"` - if the group is a membership group for an
+      institution, this fetches that institution.
+
+    * `"owning_insts"` - fetches all the institutions to which the
+      group belongs.
+
+    * `"manages_insts"` - fetches all the institutions that the group
+      manages. Typically this only applies to "Editor" groups.
+
+    * `"manages_groups"` - fetches all the groups that this group
+      manages. Note that some groups are self-managed, so this may be a
+      self-reference.
+
+    * `"managed_by_groups"` - fetches all the groups that manage this
+      group.
+
+    * `"reads_groups"` - fetches all the groups that this group has
+      privileged access to. This means that members of this group can see the
+      members of the referenced groups regardless of the membership visibility
+      settings.
+
+    * `"read_by_groups"` - fetches all the groups that have privileged
+      access to this group.
+
+    * `"includes_groups"` - fetches all the groups included by this
+      group.
+
+    * `"included_by_groups"` - fetches all the groups that include
+      this group.
+
+    As with person `fetch` parameters, the references may be used
+
+    in a chain by using the "dot" notation to fetch additional information
+
+    about referenced people, institutions or groups. For example
+
+    `"all_members.email"` will fetch the email addresses of all members
+
+    of the group. For more information about what can be fetched from
+
+    referenced people and institutions, refer to the documentation for
+
+    `PersonMethods` and `InstitutionMethods`.
+  humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  baseURL: https://www.lookup.cam.ac.uk/api/v1/
+  tags:
+  - group
+  properties:
+  - type: OpenAPI
+    url: openapi/university-of-cambridge-group-api-openapi.yml
+  - type: Documentation
+    url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - type: JSONSchema
+    url: json-schema/university-of-cambridge-person-schema.json
+  - type: x-json-structure
+    url: json-structure/university-of-cambridge-person-structure.json
+  - type: x-examples
+    url: examples/university-of-cambridge-person-example.json
+  - type: x-spectral-rules
+    url: rules/university-of-cambridge-rules.yml
+  - type: x-vocabulary
+    url: vocabulary/university-of-cambridge-vocabulary.yml
+  - type: x-json-ld-context
+    url: json-ld/university-of-cambridge-context.jsonld
+- aid: university-of-cambridge:university-of-cambridge-ibis-api
+  name: University of Cambridge ibis API
+  description: Common methods for searching for objects in the Lookup/Ibis database.
+  humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  baseURL: https://www.lookup.cam.ac.uk/api/v1/
+  tags:
+  - ibis
+  properties:
+  - type: OpenAPI
+    url: openapi/university-of-cambridge-ibis-api-openapi.yml
+  - type: Documentation
+    url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - type: JSONSchema
+    url: json-schema/university-of-cambridge-person-schema.json
+  - type: x-json-structure
+    url: json-structure/university-of-cambridge-person-structure.json
+  - type: x-examples
+    url: examples/university-of-cambridge-person-example.json
+  - type: x-spectral-rules
+    url: rules/university-of-cambridge-rules.yml
+  - type: x-vocabulary
+    url: vocabulary/university-of-cambridge-vocabulary.yml
+  - type: x-json-ld-context
+    url: json-ld/university-of-cambridge-context.jsonld
+- aid: university-of-cambridge:university-of-cambridge-institution-api
+  name: University of Cambridge institution API
+  description: >-
+    Methods for querying and manipulating institutions.
+
+
+    #### The fetch parameter for institutions
+
+
+    All methods that return institutions also accept an optional
+
+    `fetch` parameter that may be used to request additional
+
+    information about the institutions returned. For more details about
+
+    the general rules that apply to the `fetch` parameter,
+
+    refer to the `PersonMethods` documentation.
+
+
+    For institutions the `fetch` parameter may be used to fetch
+
+    any institution attribute by specifying the `schemeid` of an
+
+    institution attribute scheme. Examples include `"address"`,
+
+    `"jpegPhoto"`, `"universityPhone"`, `"instPhone"`,
+
+    `"landlinePhone"`, `"mobilePhone"`, `"faxNumber"`,
+
+    `"email"` and `"labeledURI"`. The full list (which may be
+
+    extended over time) may be obtained using `#allAttributeSchemes`.
+
+
+    In addition the following pseudo-attributes are supported:
+
+
+    * `"phone_numbers"` - fetches all phone numbers. This is
+      equivalent to
+      `"universityPhone,instPhone,landlinePhone,mobilePhone"`.
+
+    * `"all_attrs"` - fetches all attributes from all institution
+      attribute schemes. This does not include references.
+
+    * `"contact_rows"` - fetches all institution contact rows. Any
+      chained fetches from contact rows are used to fetch attributes from any
+      people referred to by the contact rows.
+
+    The `fetch` parameter may also be used to fetch referenced
+
+    people, institutions or groups. This will only include references to
+
+    non-cancelled entities. The following references are supported:
+
+
+    * `"all_members"` - fetches all the people who are members of the
+      institution.
+
+    * `"parent_insts"` - fetches all the parent institutions. Note
+      that currently all institutions have only one parent, but this may change
+      in the future, and client applications should be prepared to handle
+      multiple parents.
+
+    * `"child_insts"` - fetches all the child institutions.
+
+
+    * `"inst_groups"` - fetches all the groups that belong to the
+      institution.
+
+    * `"members_groups"` - fetches all the groups that form the
+      institution's membership list.
+
+    * `"managed_by_groups"` - fetches all the groups that manage the
+      institution's data (commonly called "Editor" groups).
+
+    As with person `fetch` parameters, the references may be used
+
+    in a chain by using the "dot" notation to fetch additional information
+
+    about referenced people, institutions or groups. For example
+
+    `"all_members.email"` will fetch the email addresses of all members
+
+    of the institution. For more information about what can be fetched from
+
+    referenced people and groups, refer to the documentation for
+
+    `PersonMethods` and `GroupMethods`.
+  humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  baseURL: https://www.lookup.cam.ac.uk/api/v1/
+  tags:
+  - institution
+  properties:
+  - type: OpenAPI
+    url: openapi/university-of-cambridge-institution-api-openapi.yml
+  - type: Documentation
+    url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - type: JSONSchema
+    url: json-schema/university-of-cambridge-person-schema.json
+  - type: x-json-structure
+    url: json-structure/university-of-cambridge-person-structure.json
+  - type: x-examples
+    url: examples/university-of-cambridge-person-example.json
+  - type: x-spectral-rules
+    url: rules/university-of-cambridge-rules.yml
+  - type: x-vocabulary
+    url: vocabulary/university-of-cambridge-vocabulary.yml
+  - type: x-json-ld-context
+    url: json-ld/university-of-cambridge-context.jsonld
+- aid: university-of-cambridge:university-of-cambridge-person-api
+  name: University of Cambridge person API
+  description: >-
+    Methods for querying and manipulating people.
+
+
+    #### Notes on the fetch parameter
+
+
+    All methods that return people, institutions or groups also accept an
+
+    optional `fetch` parameter that may be used to request
+
+    additional information about the entities returned. Without this
+
+    parameter, only a few basic details about each person, institution or
+
+    group are returned. The `fetch` parameter is quite flexible,
+
+    and may be used in a number of different ways:
+
+
+    * **Attribute fetching**. Attributes may be fetched by specifying the
+      `schemeid` of an attribute scheme. For example to fetch a
+      person's email addresses, use the value `"email"`. For people common
+      attribute schemes include `"jpegPhoto"`, `"misAffiliation"`,
+      `"title"`, `"universityPhone"`, `"landlinePhone"`,
+      `"mobilePhone"`, `"pager"`, `"labeledURI"` and `"address"`.
+      The full list of person attribute schemes may be obtained using `#allAttributeSchemes`.
+
+    * **Pseudo-attributes**. Certain special pseudo-attributes are defined
+      for convenience. For people, the following pseudo-attributes are supported:
+
+      * `"phone_numbers"` - fetches all phone numbers. This is
+        equivalent to
+        `"universityPhone,instPhone,landlinePhone,mobilePhone,pager"`.
+
+      * `"all_identifiers"` - fetches all identifiers. Currently people
+        only have CRSid identifiers, but in the future additional identifiers such
+        as USN or staffNumber may be added.
+
+      * `"all_attrs"` - fetches all attributes from all person attribute
+        schemes. This does not include identifiers or references.
+
+    * **Reference fetching**. For people, the following references are
+      supported (and will fetch only non-cancelled institutions and groups):
+
+      * `"all_insts"` - fetches all the institutions to which the person
+        belongs (sorted in name order).
+
+      * `"all_groups"` - fetches all the groups that the person is a
+        member of, including indirect group memberships, via groups that include
+        other groups.
+
+      * `"direct_groups"` - fetches all the groups that the person is
+        directly a member of. This does not include indirect group memberships -
+        i.e., groups that include these groups.
+
+    * **Chained reference fetching**. To fetch properties of referenced
+      objects, the "dot" notation may be used. For example, to fetch the email
+      addresses of all the institutions to which a person belongs, use
+      `"all_insts.email"`. Chains may include a number of reference
+      following steps, for example
+      `"all_insts.managed_by_groups.all_members.email"` will fetch all the
+      institutions to which the person belongs, all the groups that manage those
+      institutions, all the visible members of those groups and all the email
+      addresses of those managing group members. For more information about what
+      can be fetched from referenced institutions and groups, refer to the
+      documentation for `InstitutionMethods` and `GroupMethods`.
+
+    Multiple values of the `fetch` parameter should be separated
+
+    by commas.
+
+
+    #### Fetch parameter examples
+
+
+    `fetch = "email"`
+
+    This fetches all the person's email addresses.
+
+
+    `fetch = "title,address"`
+
+    This fetches all the person's titles (roles) and addresses.
+
+
+    `fetch = "all_attrs"`
+
+    This fetches all the person's attributes.
+
+
+    `fetch = "all_groups,all_insts"`
+
+    This fetches all the groups and institutions to which the person belongs.
+
+
+    `fetch = "all_insts.parent_insts"`
+
+    This fetches all the person's institutions, and their parent institutions.
+
+
+    `fetch = "all_insts.email,all_insts.all_members.email"`
+
+    This fetches all the person's institutions and their email addresses, and
+
+    all the members of those institutions, and the email addresses of all
+
+    those members.
+  humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  baseURL: https://www.lookup.cam.ac.uk/api/v1/
+  tags:
+  - person
+  properties:
+  - type: OpenAPI
+    url: openapi/university-of-cambridge-person-api-openapi.yml
+  - type: Documentation
+    url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - type: JSONSchema
+    url: json-schema/university-of-cambridge-person-schema.json
+  - type: x-json-structure
+    url: json-structure/university-of-cambridge-person-structure.json
+  - type: x-examples
+    url: examples/university-of-cambridge-person-example.json
+  - type: x-spectral-rules
+    url: rules/university-of-cambridge-rules.yml
+  - type: x-vocabulary
+    url: vocabulary/university-of-cambridge-vocabulary.yml
+  - type: x-json-ld-context
+    url: json-ld/university-of-cambridge-context.jsonld
 common:
   - type: AgenticAccess
     url: agentic-access/university-of-cambridge-agentic-access.yml
