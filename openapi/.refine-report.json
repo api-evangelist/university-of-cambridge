@@ -1,0 +1,20 @@
+{
+  "provider": "university-of-cambridge",
+  "sources": [
+    "university-of-cambridge-group-api-openapi.yml",
+    "university-of-cambridge-ibis-api-openapi.yml",
+    "university-of-cambridge-institution-api-openapi.yml",
+    "university-of-cambridge-person-api-openapi.yml"
+  ],
+  "outputs": [
+    "university-of-cambridge-group-api-openapi.yml",
+    "university-of-cambridge-ibis-api-openapi.yml",
+    "university-of-cambridge-institution-api-openapi.yml",
+    "university-of-cambridge-person-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
