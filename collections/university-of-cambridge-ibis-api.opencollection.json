@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lookup/ web service group ibis API",
+    "version": "1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "ibis",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the ID of the last (most recent) transaction.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/last-transaction"
+          },
+          "docs": "Get the ID of the last (most recent) transaction.\n\nA transaction represents an edit made to data in Lookup. Each\ntransaction is assigned a unique, sequential, numeric ID. Thus\nthis last transaction ID will increase each time some data in\nLookup is changed."
+        },
+        {
+          "info": {
+            "name": "Get the current API version number.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/version"
+          },
+          "docs": "Get the current API version number."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

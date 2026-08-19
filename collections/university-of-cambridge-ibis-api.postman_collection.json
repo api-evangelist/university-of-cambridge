@@ -1,0 +1,287 @@
+{
+  "item": [
+    {
+      "id": "4b58653a-abf3-4ced-85c7-e65f52ad6c02",
+      "name": "ibis",
+      "description": {
+        "content": "Common methods for searching for objects in the Lookup/Ibis database.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0b2e9a28-84af-4b0a-9e17-4df8eeb77731",
+          "name": "Get the ID of the last (most recent) transaction.",
+          "request": {
+            "name": "Get the ID of the last (most recent) transaction.",
+            "description": {
+              "content": "Get the ID of the last (most recent) transaction.\n\nA transaction represents an edit made to data in Lookup. Each\ntransaction is assigned a unique, sequential, numeric ID. Thus\nthis last transaction ID will increase each time some data in\nLookup is changed.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "last-transaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0b5c3342-3a0b-4019-9eea-680f38085af2",
+              "name": "The ID of the latest transaction.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "last-transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": {\n    \"value\": 3211\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a60f018-742e-4005-95e1-88d05688e9cc",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "last-transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": {\n    \"error\": {\n      \"status\": 7146,\n      \"code\": \"string\",\n      \"message\": \"string\",\n      \"details\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a58ff808-5eda-4ead-b4ac-7a648f799940",
+          "name": "Get the current API version number.",
+          "request": {
+            "name": "Get the current API version number.",
+            "description": {
+              "content": "Get the current API version number.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "49ffcea2-fb15-4682-9682-13d993cec8d0",
+              "name": "The API version number string.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": {\n    \"value\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "83800828-d962-4e2f-b135-35eb7d2e5beb",
+              "name": "Unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": {\n    \"error\": {\n      \"status\": 7146,\n      \"code\": \"string\",\n      \"message\": \"string\",\n      \"details\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://lookup-test.srv.uis.cam.ac.uk/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b78469a3-de81-4547-895b-f67258a35af6",
+    "name": "Lookup/ web service group ibis API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Methods for querying and manipulating groups.\n\n#### The fetch parameter for groups\n\nAll methods that return groups also accept an optional `fetch`\nparameter that may be used to request additional information about the\ngroups returned. For more details about the general rules that apply to\nthe `fetch` parameter, refer to the `PersonMethods`\ndocumentation.\n\nFor groups the `fetch` parameter may be used to fetch references\nto people, institutions or other groups. In each case, only non-cancelled\npeople, institutions and groups will be included when fetching references.\nThe following references are supported:\n\n* `\"all_members\"` - fetches all the people who are members of the\n  group, including members of groups included by the group, and groups\n  included by those groups, and so on.\n\n* `\"direct_members\"` - fetches all the people who are direct\n  members of the group, not taking into account any included groups.\n\n* `\"members_of_inst\"` - if the group is a membership group for an\n  institution, this fetches that institution.\n\n* `\"owning_insts\"` - fetches all the institutions to which the\n  group belongs.\n\n* `\"manages_insts\"` - fetches all the institutions that the group\n  manages. Typically this only applies to \"Editor\" groups.\n\n* `\"manages_groups\"` - fetches all the groups that this group\n  manages. Note that some groups are self-managed, so this may be a\n  self-reference.\n\n* `\"managed_by_groups\"` - fetches all the groups that manage this\n  group.\n\n* `\"reads_groups\"` - fetches all the groups that this group has\n  privileged access to. This means that members of this group can see the\n  members of the referenced groups regardless of the membership visibility\n  settings.\n\n* `\"read_by_groups\"` - fetches all the groups that have privileged\n  access to this group.\n\n* `\"includes_groups\"` - fetches all the groups included by this\n  group.\n\n* `\"included_by_groups\"` - fetches all the groups that include\n  this group.\n\nAs with person `fetch` parameters, the references may be used\nin a chain by using the \"dot\" notation to fetch additional information\nabout referenced people, institutions or groups. For example\n`\"all_members.email\"` will fetch the email addresses of all members\nof the group. For more information about what can be fetched from\nreferenced people and institutions, refer to the documentation for\n`PersonMethods` and `InstitutionMethods`.",
+      "type": "text/plain"
+    }
+  }
+}

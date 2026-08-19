@@ -1,0 +1,335 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Lookup/Ibis web service group API",
+    "version": "1.2"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "group",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Return a list of all groups.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/all-groups",
+            "params": [
+              {
+                "name": "includeCancelled",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not to include cancelled\ngroups. By default, only live groups are returned."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch."
+              }
+            ]
+          },
+          "docs": "Return a list of all groups.\n\nBy default, only a few basic details about each group are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references."
+        },
+        {
+          "info": {
+            "name": "Get the groups with the specified IDs or names.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/list",
+            "params": [
+              {
+                "name": "groupids",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of group IDs or\ngroup names (may be a mix of both)."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch."
+              }
+            ]
+          },
+          "docs": "Get the groups with the specified IDs or names.\n\nBy default, only a few basic details about each group are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references.\n\nThe results are sorted by groupid.\n\nNOTE: The URL path length is limited to around 8000 characters,\nwhich limits the number of groups that this method can fetch. Group\nIDs are currently 6 characters long, and must be comma separated and\nURL encoded, which limits this method to around 800 "
+        },
+        {
+          "info": {
+            "name": "Find all groups modified between the specified pair of transactions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/modified-groups",
+            "params": [
+              {
+                "name": "minTxId",
+                "value": "",
+                "type": "query",
+                "description": "Include modifications made in transactions\nafter (but not including) this one."
+              },
+              {
+                "name": "maxTxId",
+                "value": "",
+                "type": "query",
+                "description": "Include modifications made in transactions\nup to and including this one."
+              },
+              {
+                "name": "groupids",
+                "value": "",
+                "type": "query",
+                "description": "Only include groups with IDs or names in\nthis list. By default, all modified groups will be included."
+              },
+              {
+                "name": "includeCancelled",
+                "value": "",
+                "type": "query",
+                "description": "Include cancelled groups. By\ndefault, cancelled groups are excluded."
+              },
+              {
+                "name": "membershipChanges",
+                "value": "",
+                "type": "query",
+                "description": "Include groups whose members have\nchanged. By default, changes to group memberships are not taken into\nconsideration."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch."
+              }
+            ]
+          },
+          "docs": "Find all groups modified between the specified pair of transactions.\n\nThe transaction IDs specified should be the IDs from two different\nrequests for the last (most recent) transaction ID, made at different\ntimes, that returned different values, indicating that some Lookup\ndata was modified in the period between the two requests. This method\nthen determines which (if any) groups were affected.\n\nBy default, only a few basic details about each group are returned,\nbut the optional `fetch` parameter"
+        },
+        {
+          "info": {
+            "name": "Search for groups using a free text query string.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/search",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "The search string."
+              },
+              {
+                "name": "approxMatches",
+                "value": "",
+                "type": "query",
+                "description": "Flag to enable more approximate\nmatching in the search, causing more results to be returned. Defaults\nto `false`. This is ignored for LQL queries."
+              },
+              {
+                "name": "includeCancelled",
+                "value": "",
+                "type": "query",
+                "description": "Flag to allow cancelled groups to\nbe included. Defaults to `false`."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to skip at the start\nof the search. Defaults to 0."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of results to return.\nDefaults to 100."
+              },
+              {
+                "name": "orderBy",
+                "value": "",
+                "type": "query",
+                "description": "The order in which to list the results.\nThis may be `\"groupid\"`, `\"name\"` (the default for non-LQL\nqueries) or `\"title\"`. This is ignored for LQL queries, which\nalways return results in groupid order."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch."
+              }
+            ]
+          },
+          "docs": "Search for groups using a free text query string. This is the same\nsearch function that is used in the Lookup web application.\n\nBy default, only a few basic details about each group are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references.\n\nNOTE: If the query string starts with the prefix `\"group:\"`, it\nis treated as an [LQL query](/lql), allowing\nmore advanced searches. An LQL query will ignore the\n`approxMatches` parameter, but it will respect t"
+        },
+        {
+          "info": {
+            "name": "Count the number of groups that would be returned by a search using\na free text query string.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/search-count",
+            "params": [
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "The search string."
+              },
+              {
+                "name": "approxMatches",
+                "value": "",
+                "type": "query",
+                "description": "Flag to enable more approximate\nmatching in the search, causing more results to be returned. Defaults\nto `false`. This is ignored for LQL queries."
+              },
+              {
+                "name": "includeCancelled",
+                "value": "",
+                "type": "query",
+                "description": "Flag to allow cancelled groups to\nbe included. Defaults to `false`."
+              }
+            ]
+          },
+          "docs": "Count the number of groups that would be returned by a search using\na free text query string.\n\nNOTE: If the query string starts with the prefix `\"group:\"`, it\nis treated as an [LQL query](/lql), allowing\nmore advanced searches. An LQL query will ignore the\n`approxMatches` parameter, but it will respect the value of\n`includeCancelled`."
+        },
+        {
+          "info": {
+            "name": "Get the group with the specified ID or name.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/:groupid",
+            "params": [
+              {
+                "name": "groupid",
+                "value": "",
+                "type": "path",
+                "description": "The ID or name of the group to fetch. This\nmay be either the numeric ID or the short hyphenated group name (for\nexample `\"100656\"` or `\"cs-editors\"`)."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch."
+              }
+            ]
+          },
+          "docs": "Get the group with the specified ID or name.\n\nBy default, only a few basic details about the group are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references of the group.\n\nNOTE: The group returned may be a cancelled group. It is the caller's\nresponsibility to check its cancelled flag."
+        },
+        {
+          "info": {
+            "name": "Get all the cancelled members of the specified group, including\ncancelled members of groups included by the group, and groups included\nby those groups, and so on.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/:groupid/cancelled-members",
+            "params": [
+              {
+                "name": "groupid",
+                "value": "",
+                "type": "path",
+                "description": "The ID or name of the group."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch for each person."
+              }
+            ]
+          },
+          "docs": "Get all the cancelled members of the specified group, including\ncancelled members of groups included by the group, and groups included\nby those groups, and so on.\n\nBy default, only a few basic details about each member are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references of each person.\n\nNOTE: This method returns only cancelled people. It does not include\npeople who were removed from the group. Cancelled people are no longer\nconsidered to be c"
+        },
+        {
+          "info": {
+            "name": "Get the direct members of the specified group, not including members\nincluded via groups included by the group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/:groupid/direct-members",
+            "params": [
+              {
+                "name": "groupid",
+                "value": "",
+                "type": "path",
+                "description": "The ID or name of the group."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch for each person."
+              }
+            ]
+          },
+          "docs": "Get the direct members of the specified group, not including members\nincluded via groups included by the group.\n\nBy default, only a few basic details about each member are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references of each person.\n\nNOTE: This method will not include cancelled people."
+        },
+        {
+          "info": {
+            "name": "Get all the members of the specified group, including members of\ngroups included by the group, and groups included by those groups,\nand so on.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/:groupid/members",
+            "params": [
+              {
+                "name": "groupid",
+                "value": "",
+                "type": "path",
+                "description": "The ID or name of the group."
+              },
+              {
+                "name": "fetch",
+                "value": "",
+                "type": "query",
+                "description": "A comma-separated list of any additional\nattributes or references to fetch for each person."
+              }
+            ]
+          },
+          "docs": "Get all the members of the specified group, including members of\ngroups included by the group, and groups included by those groups,\nand so on.\n\nBy default, only a few basic details about each member are returned,\nbut the optional `fetch` parameter may be used to fetch\nadditional attributes or references of each person.\n\nNOTE: This method will not include cancelled people."
+        },
+        {
+          "info": {
+            "name": "Get a signed JSON Web Token (JWT) with the group as subject and\nspecified audience, only if authorized user/group has permission to edit\nthe group.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lookup-test.srv.uis.cam.ac.uk/api/v1/group/:groupid/token",
+            "params": [
+              {
+                "name": "groupid",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group."
+              },
+              {
+                "name": "aud",
+                "value": "",
+                "type": "query",
+                "description": "Audience for the signed JWT."
+              }
+            ]
+          },
+          "docs": "Get a signed JSON Web Token (JWT) with the group as subject and\nspecified audience, only if authorized user/group has permission to edit\nthe group."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
