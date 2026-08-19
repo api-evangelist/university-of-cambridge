@@ -1,15 +1,31 @@
 aid: university-of-cambridge
 name: University of Cambridge
 description: >-
-  The University of Cambridge (founded 1209; QS World 2025 #5) is a public
-  collegiate research university with a real, documented developer footprint
-  operated mainly by University Information Services (UIS): a central API
-  Gateway / developer portal (developer.api.apps.cam.ac.uk) fronting
-  identity-oriented REST APIs, the long-standing Lookup/Ibis directory web
-  service, the Raven central authentication service (OAuth2 / OpenID Connect),
-  and the Apollo institutional repository (DSpace REST + OAI-PMH). UIS
-  open-source code is published on a self-hosted GitLab.
+  The University of Cambridge (founded 1209) is a public collegiate research
+  university and Russell Group member whose programmable footprint is unusually
+  real for a university, and is operated in-house by University Information
+  Services (UIS) rather than bought in. Verified institution-operated surfaces:
+  the Lookup/Ibis directory web service, which publishes a first-party OpenAPI
+  3.0 document at www.lookup.cam.ac.uk/openapi-3.0.yaml (39 paths, byte-identical
+  to the copy held here); an API Gateway on the University's own domain
+  (api.apps.cam.ac.uk) whose developer portal lists ten published APIs — Lookup,
+  University Card, University Photo, University Student, University Human
+  Resources, OAuth2, Raven device statistics, Institutional identifier mapping,
+  Undergraduate Admissions and Staff On Costs — fronted by a live OpenID Connect
+  discovery document; a Shibboleth SAML 2.0 identity provider publishing signed
+  IdP metadata; the Apollo institutional repository, self-hosted DSpace 8.1 on
+  Cambridge IP space with a DSpace REST API and an OAI-PMH endpoint serving
+  eleven metadata formats and minting DataCite DOIs under prefix 10.17863; and
+  the Cambridge Digital Library IIIF Presentation and Image APIs. Honest limits:
+  only the Lookup contract is published as a downloadable machine-readable spec,
+  every gateway API requires registered client credentials before it will answer,
+  and there is no public status page for the API platform. Library discovery
+  (iDiscover, Ex Libris Primo VE) and the research information system (Symplectic
+  Elements) run under Cambridge subdomains but are vendor platforms — they are
+  recorded here as tenant relationships, not as Cambridge contracts.
 type: Index
+x-type: university
+x-category: Public Research University
 accessModel:
   pricing: free
   onboarding: self-serve
@@ -33,15 +49,23 @@ tags:
   - University
   - Research
   - United Kingdom
+  - Russell Group
   - Identity
+  - Identity Federation
   - API Gateway
   - Developer Portal
+  - Research Data
+  - Open Access
+  - Research Repository
+  - Library
+  - Digital Collections
 created: '2026-06-03'
-modified: '2026-06-03'
+modified: '2026-08-19'
 # artifact pointers added for Lookup/Ibis OpenAPI 3.0 spec
 specificationVersion: '0.23'
 apis:
 - aid: university-of-cambridge:raven
+  x-operator: institution
   name: Raven Authentication (OAuth2 / OpenID Connect)
   description: >-
     The University's central web authentication service. Raven OAuth2 conforms to OpenID Connect; applications
@@ -59,7 +83,14 @@ apis:
     url: https://docs.raven.cam.ac.uk/
   - type: Signup
     url: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
+  - type: x-openid-configuration
+    url: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+  - type: x-jwks
+    url: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/jwks.json
+  - type: Authentication
+    url: authentication/university-of-cambridge-authentication.yml
 - aid: university-of-cambridge:gateway
+  x-operator: institution
   name: Cambridge API Gateway (Card / Student / HR)
   description: >-
     UIS API Gateway (ALPHA) publishing read-oriented REST APIs — University Card, University Student (CamSIS-sourced),
@@ -78,7 +109,18 @@ apis:
     url: https://developer.api.apps.cam.ac.uk/
   - type: DeveloperPortal
     url: https://guidebook.devops.uis.cam.ac.uk/services/api-gateway/
+  - type: APIReference
+    url: https://developer.api.apps.cam.ac.uk/apis
+  - type: x-openid-configuration
+    url: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+  - type: x-design-guide
+    url: https://guidebook.devops.uis.cam.ac.uk/reference/best-practice/api/
+  - type: x-lifecycle
+    url: lifecycle/university-of-cambridge-gateway-lifecycle.yml
+  - type: x-errors
+    url: errors/university-of-cambridge-errors.yml
 - aid: university-of-cambridge:apollo
+  x-operator: institution
   name: Apollo Institutional Repository API (DSpace)
   description: >-
     Cambridge's open-access research repository (Apollo) on the DSpace platform, exposing OAI-PMH metadata
@@ -95,7 +137,14 @@ apis:
     url: https://www.re3data.org/repository/r3d100010620
   - type: Website
     url: https://www.repository.cam.ac.uk/
+  - type: x-oai-pmh
+    url: https://api.repository.cam.ac.uk/server/oai/request?verb=Identify
+  - type: APIReference
+    url: https://api.repository.cam.ac.uk/server/api
+  - type: x-conformance
+    url: conformance/university-of-cambridge-education-standards.yml
 - aid: university-of-cambridge:university-of-cambridge-group-api
+  x-operator: institution
   name: University of Cambridge group API
   description: >-
     Methods for querying and manipulating groups.
@@ -196,6 +245,7 @@ apis:
   - type: x-json-ld-context
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-ibis-api
+  x-operator: institution
   name: University of Cambridge ibis API
   description: Common methods for searching for objects in the Lookup/Ibis database.
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
@@ -220,6 +270,7 @@ apis:
   - type: x-json-ld-context
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-institution-api
+  x-operator: institution
   name: University of Cambridge institution API
   description: >-
     Methods for querying and manipulating institutions.
@@ -330,6 +381,7 @@ apis:
   - type: x-json-ld-context
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-person-api
+  x-operator: institution
   name: University of Cambridge person API
   description: >-
     Methods for querying and manipulating people.
@@ -460,6 +512,142 @@ apis:
     url: vocabulary/university-of-cambridge-vocabulary.yml
   - type: x-json-ld-context
     url: json-ld/university-of-cambridge-context.jsonld
+- aid: university-of-cambridge:shibboleth-idp
+  x-operator: institution
+  name: Cambridge Shibboleth Identity Provider (SAML 2.0 metadata)
+  description: >-
+    The University's Shibboleth identity provider, publishing signed SAML 2.0 IdP metadata at
+    https://shib.raven.cam.ac.uk/shibboleth. The EntityDescriptor carries entityID
+    https://shib.raven.cam.ac.uk/shibboleth, an IDPSSODescriptor advertising SAML 2.0, SAML 1.1
+    and Shibboleth 1.0, authoritative shibmd:Scope values of cam.ac.uk and
+    eresources.lib.cam.ac.uk, an mdui:DisplayName of "University of Cambridge", and mdui:DiscoHints
+    listing Cambridge's own IP ranges (128.232.0.0/16, 129.169.0.0/16, 131.111.0.0/16 and others).
+    This is federation metadata a university operates by definition and cannot outsource — it is
+    the surface class most institutional profiles miss entirely. Cambridge participates in the UK
+    Access Management Federation, which republishes this entity through eduGAIN.
+  humanURL: https://docs.raven.cam.ac.uk/en/latest/
+  baseURL: https://shib.raven.cam.ac.uk/shibboleth
+  tags:
+  - Identity Federation
+  - SAML
+  - Shibboleth
+  - Single Sign-On
+  - Metadata
+  properties:
+  - type: x-saml-metadata
+    url: https://shib.raven.cam.ac.uk/shibboleth
+  - type: Documentation
+    url: https://docs.raven.cam.ac.uk/en/latest/
+  - type: x-federation
+    url: https://www.ukfederation.org.uk/
+  - type: x-conformance
+    url: conformance/university-of-cambridge-education-standards.yml
+- aid: university-of-cambridge:apollo-oai-pmh
+  x-operator: institution
+  name: Apollo OAI-PMH metadata harvesting endpoint
+  description: >-
+    OAI-PMH 2.0 harvesting interface for Apollo, the University's institutional repository, served
+    from Cambridge's own host. Identify returns repositoryName "Apollo - University of Cambridge
+    Repository", repositoryIdentifier www.repository.cam.ac.uk, adminEmail
+    support@repository.cam.ac.uk and an earliestDatestamp of 1959-01-01. ListMetadataFormats
+    advertises eleven prefixes — oai_dc, qdc, mods, mets, marc, didl, ore, rdf, etdms, uketd_dc and
+    rioxx (RIOXX v3.0, the UK research-funder metadata profile) — and ListSets returns 100+ sets.
+    Records carry DataCite DOIs under the 10.17863/CAM prefix. The repository software is DSpace,
+    but the deployment, the host and the metadata are the institution's.
+  humanURL: https://www.repository.cam.ac.uk/
+  baseURL: https://api.repository.cam.ac.uk/server/oai/request
+  tags:
+  - OAI-PMH
+  - Research Repository
+  - Open Access
+  - Metadata Harvesting
+  - DSpace
+  properties:
+  - type: x-oai-pmh
+    url: https://api.repository.cam.ac.uk/server/oai/request?verb=Identify
+  - type: Documentation
+    url: https://www.openresearch.cam.ac.uk/
+  - type: x-conformance
+    url: conformance/university-of-cambridge-education-standards.yml
+- aid: university-of-cambridge:cudl-iiif
+  x-operator: institution
+  name: Cambridge Digital Library IIIF APIs
+  description: >-
+    The Cambridge University Library digital collections platform exposes IIIF Presentation API 2.1
+    manifests at cudl.lib.cam.ac.uk/iiif/<item-id> and IIIF Image API 2.1 endpoints at
+    images.lib.cam.ac.uk/iiif/<image>.jp2/info.json, both on the institution's own domain. Verified
+    live: the manifest for MS-ADD-03996 (Newton's Trinity College Notebook) returns 247KB of
+    application/json declaring @type sc:Manifest against the IIIF presentation/2 context, and the
+    matching info.json returns application/ld+json with the image/2 context, tile sizes and scale
+    factors. A supporting metadata service at services.cudl.lib.cam.ac.uk serves TEI XML per item.
+    Institution-built and institution-operated — not a vendor discovery layer.
+  humanURL: https://cudl.lib.cam.ac.uk/about
+  baseURL: https://cudl.lib.cam.ac.uk/iiif/
+  tags:
+  - IIIF
+  - Digital Collections
+  - Library
+  - Linked Data
+  - Cultural Heritage
+  properties:
+  - type: x-iiif-presentation
+    url: https://cudl.lib.cam.ac.uk/iiif/MS-ADD-03996
+  - type: x-iiif-image
+    url: https://images.lib.cam.ac.uk/iiif/MS-ADD-03996-000-00001.jp2/info.json
+  - type: Documentation
+    url: https://cudl.lib.cam.ac.uk/about
+  - type: Website
+    url: https://cudl.lib.cam.ac.uk/
+- aid: university-of-cambridge:idiscover-primo
+  x-operator: tenant
+  x-vendor: Ex Libris (Clarivate)
+  name: iDiscover library discovery (Ex Libris Primo VE) — TENANT
+  description: >-
+    Cambridge's library discovery layer runs on Ex Libris Primo VE. idiscover.lib.cam.ac.uk is a
+    CNAME to cam.primo.exlibrisgroup.com -> eu00.primo.exlibrisgroup.com, and the landing URL
+    redirects to /discovery/search?vid=44CAM_INST:44CAM_PROD — an Ex Libris tenant view identifier,
+    not a Cambridge endpoint. The catalogue data is Cambridge's; the contract, the API surface and
+    the engineering are Ex Libris'. Recorded here as a relationship so the institutional fact is
+    not lost, and deliberately NOT saved as a Cambridge contract — a generic Primo/Alma spec
+    attributed to an institution is exactly the misattribution this profile exists to prevent.
+  humanURL: https://www.lib.cam.ac.uk/idiscover
+  baseURL: https://idiscover.lib.cam.ac.uk/discovery/search?vid=44CAM_INST:44CAM_PROD
+  tags:
+  - Library
+  - Discovery
+  - Tenant
+  - Ex Libris
+  - Primo
+  properties:
+  - type: Website
+    url: https://www.lib.cam.ac.uk/idiscover
+  - type: x-tenant-host
+    url: https://idiscover.lib.cam.ac.uk/
+- aid: university-of-cambridge:elements-symplectic
+  x-operator: tenant
+  x-vendor: Symplectic (Digital Science)
+  name: Symplectic Elements research information system — TENANT
+  description: >-
+    Cambridge's current research information system (CRIS) is Symplectic Elements, reached at
+    elements.admin.cam.ac.uk. The host sits under cam.ac.uk but resolves via CNAME to
+    cam.elements.symplectic.org -> cam-prod.elements.symplectic.org on Symplectic infrastructure,
+    and answers HTTP 401 to anonymous requests. The University's Open Research site
+    (openresearch.cam.ac.uk) links it as the institutional deposit route. Cambridge's research
+    data, Symplectic's contract — recorded as a tenant relationship, with no Symplectic spec saved
+    under this institution.
+  humanURL: https://www.openresearch.cam.ac.uk/
+  baseURL: https://elements.admin.cam.ac.uk/
+  tags:
+  - Research Information
+  - CRIS
+  - Tenant
+  - Symplectic
+  - Research Data
+  properties:
+  - type: Website
+    url: https://www.openresearch.cam.ac.uk/
+  - type: x-tenant-host
+    url: https://elements.admin.cam.ac.uk/
 common:
   - type: AgenticAccess
     url: agentic-access/university-of-cambridge-agentic-access.yml
@@ -487,6 +675,87 @@ common:
     url: review.yml
   - url: https://www.cam.ac.uk/rss/
     type: Blog
+  - type: Documentation
+    url: https://www.lookup.cam.ac.uk/doc/ws-doc/
+  - type: APIReference
+    url: https://developer.api.apps.cam.ac.uk/apis
+  - type: IdentityFederation
+    url: https://shib.raven.cam.ac.uk/shibboleth
+  - type: ResearchRepository
+    url: https://www.repository.cam.ac.uk/
+  - type: LibraryCatalog
+    url: https://www.lib.cam.ac.uk/idiscover
+  - type: ResearchComputing
+    url: https://www.hpc.cam.ac.uk/
+  - type: AIPolicy
+    url: https://guidebook.devops.uis.cam.ac.uk/standards/genai-policy/
+  - type: AITooling
+    url: https://gitlab.developers.cam.ac.uk/uis/devops/ai/agent-skills
+  - type: CourseCatalog
+    url: https://www.undergraduate.study.cam.ac.uk/courses
+  - type: TermsOfService
+    url: https://www.cam.ac.uk/about-this-site/terms-and-conditions
+  - type: PrivacyPolicy
+    url: https://www.cam.ac.uk/about-this-site/privacy-policy
+  - type: Support
+    url: https://help.uis.cam.ac.uk/
+  - type: Conformance
+    url: conformance/university-of-cambridge-education-standards.yml
+  - type: Lifecycle
+    url: lifecycle/university-of-cambridge-gateway-lifecycle.yml
+  - type: Errors
+    url: errors/university-of-cambridge-errors.yml
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-coverage:
+  state: covered
+  reason: institution_operated_surfaces_verified
+  detail: >-
+    Cambridge is one of the minority of institutions with a genuine, in-house programmable
+    footprint, and every surface recorded here resolved on a cam.ac.uk host under University
+    Information Services. Ten institution-operated surfaces were verified live on 2026-08-19: the
+    Lookup/Ibis first-party OpenAPI 3.0 (39 paths, byte-identical to the copy stored in this repo),
+    the API Gateway developer portal listing ten published APIs, a live OpenID Connect discovery
+    document, Shibboleth SAML 2.0 IdP metadata, the Apollo DSpace 8.1 REST root, the Apollo OAI-PMH
+    endpoint with eleven metadata formats, and the Cambridge Digital Library IIIF Presentation and
+    Image APIs. Coverage is not total: only the Lookup contract is downloadable as a
+    machine-readable spec, so nine of the ten gateway APIs are documented but uncontracted here;
+    the gateway itself answers 401 without registered client credentials; the portal's
+    /openapi.json path returns an Angular SPA shell rather than a spec and was rejected as a
+    soft-200; and no public status page exists for the platform. Two vendor platforms running under
+    Cambridge subdomains — iDiscover (Ex Libris Primo VE) and Elements (Symplectic) — are recorded
+    as tenant relationships and were deliberately not saved as Cambridge contracts.
+  evidence:
+  - url: https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+    status: 200
+  - url: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+    status: 200
+  - url: https://shib.raven.cam.ac.uk/shibboleth
+    status: 200
+  - url: https://api.repository.cam.ac.uk/server/oai/request?verb=Identify
+    status: 200
+  - url: https://api.repository.cam.ac.uk/server/api
+    status: 200
+  - url: https://cudl.lib.cam.ac.uk/iiif/MS-ADD-03996
+    status: 200
+  - url: https://images.lib.cam.ac.uk/iiif/MS-ADD-03996-000-00001.jp2/info.json
+    status: 200
+  - url: https://developer.api.apps.cam.ac.uk/apis
+    status: 200
+  - url: https://www.lookup.cam.ac.uk/api/v1/
+    status: 401
+  - url: https://api.apps.cam.ac.uk/card/v1beta1/
+    status: 401
+  - url: https://elements.admin.cam.ac.uk/
+    status: 401
+  - url: https://developer.api.apps.cam.ac.uk/openapi.json
+    status: 200
+  - url: https://www.cam.ac.uk/.well-known/security.txt
+    status: 404
+  - url: https://www.cam.ac.uk/llms.txt
+    status: 404
+  - url: https://status.apps.cam.ac.uk/
+    status: 0
+  checked: '2026-08-19'
+  method: pipeline-university
