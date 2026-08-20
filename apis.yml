@@ -75,6 +75,11 @@ apis:
   tags:
   - Identity
   - Authentication
+  - OpenID Connect
+  - SSO
+  tags_raw:
+  - Identity
+  - Authentication
   - OAuth2
   - OpenID Connect
   - SSO
@@ -226,6 +231,8 @@ apis:
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
   baseURL: https://www.lookup.cam.ac.uk/api/v1/
   tags:
+  - Group
+  tags_raw:
   - group
   properties:
   - type: OpenAPI
@@ -494,6 +501,8 @@ apis:
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
   baseURL: https://www.lookup.cam.ac.uk/api/v1/
   tags:
+  - Persons
+  tags_raw:
   - person
   properties:
   - type: OpenAPI
@@ -638,6 +647,12 @@ apis:
   humanURL: https://www.openresearch.cam.ac.uk/
   baseURL: https://elements.admin.cam.ac.uk/
   tags:
+  - Research Information
+  - CRIS
+  - Tenant
+  - symplectic
+  - Research Data
+  tags_raw:
   - Research Information
   - CRIS
   - Tenant
