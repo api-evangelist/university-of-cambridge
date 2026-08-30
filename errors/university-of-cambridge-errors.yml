@@ -1,0 +1,71 @@
+generated: '2026-08-19'
+method: probed
+source: >-
+  Anonymous live requests against University of Cambridge institution-operated hosts on 2026-08-19,
+  cross-read against the Lookup/Ibis OpenAPI 3.0 document
+  (https://www.lookup.cam.ac.uk/openapi-3.0.yaml).
+x-operator: institution
+summary: >-
+  Cambridge's error semantics are thin and inconsistent across its own estate, and this is a real
+  finding rather than a gap in our probing. The published Lookup OpenAPI declares exactly two
+  response entries per operation across all 39 paths — a 200 and a `default` — so no error status
+  code, no problem shape and no error schema is enumerated anywhere in the contract. What the hosts
+  actually return had to be observed.
+contract_declared:
+  spec: https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+  response_codes_declared:
+  - code: '200'
+    count: 39
+  - code: default
+    count: 39
+  enumerated_error_codes: 0
+  problem_details_rfc9457: false
+  error_schema_component: false
+  note: >-
+    components.responses exists but carries no distinct error payload definition; clients cannot
+    learn failure shapes from the contract.
+observed:
+- host: https://www.lookup.cam.ac.uk/api/v1/
+  status: 401
+  media_type: text/html
+  shape: HTML challenge
+  note: Basic-auth gate. The contract's basicAuth securityScheme is real and enforced.
+- host: https://api.apps.cam.ac.uk/card/v1beta1/
+  status: 401
+  media_type: application/json
+  shape: gateway rejection
+  note: Gateway rejects unauthenticated callers before routing; surface is deployed, not absent.
+- host: https://api.apps.cam.ac.uk/
+  status: 404
+  shape: gateway no-route
+  note: Bare gateway root is not a documented surface; 404 here is correct behaviour, not a dead host.
+- host: https://api.repository.cam.ac.uk/server/api/core/items
+  status: 401
+  media_type: application/json
+  shape: >-
+    {"timestamp":"...","status":401,"error":"Unauthorized","message":"Authentication is required","path":"/server/api/core/items"}
+  note: >-
+    The only structured, machine-parseable error envelope observed anywhere on a Cambridge host —
+    and it is Spring Boot's DSpace default, i.e. inherited from the repository software rather than
+    designed by the institution.
+- host: https://api.apps.cam.ac.uk/oauth2/v1/token
+  status: 404
+  media_type: application/json
+  note: Token endpoint rejects bare GET; the OIDC discovery document declares it POST-only in effect.
+- host: https://developer.api.apps.cam.ac.uk/openapi.json
+  status: 200
+  media_type: text/html
+  shape: Angular SPA shell
+  note: >-
+    SOFT-404. The developer portal answers 200 with a 2,138-byte SPA shell for unmatched paths.
+    Probed and rejected — this is a 200 that must never be credited as a specification.
+- host: https://www.cam.ac.uk/privacy-policy
+  status: 404
+  note: >-
+    Canonical privacy pointer is /about-this-site/privacy-policy (200); the bare path 404s. Recorded
+    so a future run does not re-emit the dead form.
+gaps:
+- No RFC 9457 problem+json anywhere on an institution-operated host.
+- No error codes enumerated in the one published contract.
+- No documented rate-limit or 429 semantics on the gateway.
+- No public status page — https://status.apps.cam.ac.uk/ does not resolve.

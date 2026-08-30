@@ -1,0 +1,109 @@
+generated: '2026-08-19'
+method: probed
+source: >-
+  https://developer.api.apps.cam.ac.uk/portals/api/sites/api-prod-a3dc87f7-prod/liveportal/apis —
+  the live API catalogue served by the University's own developer portal (HTTP 200,
+  application/json), read on 2026-08-19. Version/maturity labels cross-read from the portal
+  descriptions and from the gateway's own path versions.
+x-operator: institution
+note: >-
+  The University Information Services API Gateway publishes ten APIs on api.apps.cam.ac.uk. Only
+  the Lookup contract is downloadable as a machine-readable spec (see openapi/); the other nine are
+  documented on the portal but their OpenAPI snapshots are not retrievable anonymously — the
+  portal's Apigee snapshot endpoint answers 405 to GET and its /apidocs/{id} route answers 401.
+  Recording them here keeps the real footprint visible without fabricating contracts for them.
+  Note the modification timestamps: six of the ten have not been touched since 2021-2022, which is
+  consistent with the portal's own ALPHA labelling.
+platform:
+  name: University of Cambridge API Gateway
+  host: https://api.apps.cam.ac.uk
+  developer_portal: https://developer.api.apps.cam.ac.uk/
+  portal_software: Apigee integrated developer portal (Google Cloud), org api-prod-a3dc87f7
+  operator_note: >-
+    Apigee is the platform Cambridge runs the gateway on; the APIs, the product definitions and the
+    catalogue are Cambridge's. Host resolves via api-apps-cam.prod.api.gcp.uis.cam.ac.uk —
+    Cambridge UIS naming on Cambridge's own registrable domain.
+  status_page: none_found
+apis:
+- id: lookup
+  title: Lookup
+  published: true
+  spec_available: true
+  spec_url: https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+  stage: production
+  last_modified: '2021-11-04'
+  note: The one gateway API with a first-party downloadable OpenAPI 3.0 contract. Marked "Sensitive."
+- id: inst-identifiers
+  title: Institutional identifier mapping
+  published: true
+  spec_available: false
+  stage: production
+  last_modified: '2022-02-07'
+- id: university-human-resources
+  title: University Human Resources
+  published: true
+  spec_available: false
+  stage: alpha
+  last_modified: '2023-11-13'
+  note: CHRIS-sourced. Portal documents it as ALPHA and not under active development. Marked "Sensitive."
+- id: university-student
+  title: University Student
+  published: true
+  spec_available: false
+  stage: alpha
+  last_modified: '2021-11-04'
+  note: CamSIS-sourced. Portal documents it as ALPHA and not under active development.
+- id: card
+  title: University Card
+  published: true
+  spec_available: false
+  stage: beta
+  last_modified: '2021-11-04'
+  note: >-
+    Live path is /card/v1beta1/ — https://api.apps.cam.ac.uk/card/v1beta1/ answers HTTP 401 to
+    anonymous callers, confirming the surface is deployed and credential-gated rather than absent.
+- id: photo
+  title: University Photo
+  published: true
+  spec_available: false
+  stage: beta
+  last_modified: '2021-11-04'
+- id: oauth2
+  title: OAuth2 based authentication and authorisation
+  published: true
+  spec_available: false
+  stage: production
+  last_modified: '2021-11-04'
+  note: >-
+    Backed by a live OIDC discovery document at
+    https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration.
+- id: ravenstats
+  title: Raven device statistics
+  published: true
+  spec_available: false
+  stage: production
+  last_modified: '2021-11-04'
+- id: undergraduate-admissions
+  title: Undergraduate Admissions API
+  published: true
+  spec_available: false
+  stage: production
+  last_modified: '2023-01-01'
+  note: Admissions is a registrar-class surface — the class this pipeline hunts and rarely finds institution-operated.
+- id: staff-on-costs
+  title: Staff On Costs API
+  published: true
+  spec_available: false
+  stage: production
+  last_modified: '2025-04-08'
+  note: The most recently modified entry in the catalogue; evidence the gateway is still being added to.
+deprecation:
+  policy_published: false
+  evidence: >-
+    No deprecation or sunset policy was found on developer.api.apps.cam.ac.uk or in the UIS DevOps
+    Guidebook API standards. The Guidebook does publish an image-deprecation policy for containers,
+    but that governs platform images, not API versions.
+  observed: >-
+    Raven's legacy service is decommissioned in practice — https://raven.cam.ac.uk/ redirects to
+    https://legacy.raven.cam.ac.uk/errmsgs/decommissioned.html — but the retirement is announced as
+    an error page, not as a machine-readable sunset signal.

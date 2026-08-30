@@ -1,0 +1,121 @@
+generated: '2026-08-19'
+method: probed
+source: >-
+  Live probes of University of Cambridge hosts on 2026-08-19 — shib.raven.cam.ac.uk,
+  api.repository.cam.ac.uk, api.apps.cam.ac.uk, www.lookup.cam.ac.uk, cudl.lib.cam.ac.uk,
+  images.lib.cam.ac.uk — plus the DataCite REST API for DOI prefix attribution.
+regime: education
+regime_name: Education & Research
+note: >-
+  Conformance against the Kin Score `education` regime standards list. Reward-only: a standard is
+  recorded here only where a live response, not a prose claim, demonstrated it. Absent standards
+  are recorded as conforms:false with the negative evidence that established the absence, so a
+  later run does not have to re-probe them blind. Every conformance below belongs to an
+  x-operator:institution surface; nothing here is credited from a tenant or vendor platform.
+standards:
+- id: oai-pmh
+  conforms: true
+  evidence: >-
+    https://api.repository.cam.ac.uk/server/oai/request?verb=Identify returns HTTP 200 and a valid
+    OAI-PMH 2.0 envelope — protocolVersion 2.0, repositoryName "Apollo - University of Cambridge
+    Repository", baseURL https://api.repository.cam.ac.uk/server/oai/request, repositoryIdentifier
+    www.repository.cam.ac.uk, adminEmail support@repository.cam.ac.uk, earliestDatestamp
+    1959-01-01T00:00:00Z, granularity YYYY-MM-DDThh:mm:ssZ, deletedRecord transient. ListMetadataFormats
+    returns eleven prefixes (oai_dc, qdc, mods, mets, marc, didl, ore, rdf, etdms, uketd_dc, rioxx);
+    ListSets returns 100+ sets; ListRecords with metadataPrefix=rioxx returns live records.
+- id: shibboleth
+  conforms: true
+  evidence: >-
+    https://shib.raven.cam.ac.uk/shibboleth returns HTTP 200 and a Shibboleth IdP EntityDescriptor
+    with an IDPSSODescriptor whose protocolSupportEnumeration includes urn:mace:shibboleth:1.0, and
+    shibmd:Scope elements (urn:mace:shibboleth:metadata:1.0) asserting authority over cam.ac.uk and
+    eresources.lib.cam.ac.uk.
+- id: saml
+  conforms: true
+  evidence: >-
+    The same EntityDescriptor is SAML 2.0 metadata (xmlns urn:oasis:names:tc:SAML:2.0:metadata),
+    entityID https://shib.raven.cam.ac.uk/shibboleth, protocolSupportEnumeration
+    "urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol", with mdui:UIInfo
+    DisplayName "University of Cambridge" and mdui:DiscoHints IPHints for Cambridge's own ranges.
+- id: datacite
+  conforms: true
+  evidence: >-
+    Apollo mints DataCite DOIs. https://api.datacite.org/prefixes/10.17863 returns HTTP 200 and
+    resolves the prefix to DataCite client "bl.cam", whose client record names it "Apollo" with url
+    https://www.repository.cam.ac.uk/ (registered 2015). Live Apollo OAI-PMH rioxx records carry
+    DOIs of the form 10.17863/CAM.75329, 10.17863/CAM.80707, 10.17863/CAM.48716.
+- id: orcid
+  conforms: false
+  evidence: >-
+    No ORCID identifier appeared in Apollo's OAI-PMH qdc or rioxx output, and the DSpace REST
+    /server/api/core/items collection answers HTTP 401 to anonymous callers, so no ORCID field
+    could be confirmed on a public record. Recorded as absent rather than assumed — Symplectic
+    Elements (a tenant surface) is the more likely ORCID integration point and its contract is not
+    Cambridge's.
+- id: crossref
+  conforms: false
+  evidence: >-
+    Apollo's DOI prefix 10.17863 is a DataCite prefix, not a Crossref one; no Crossref deposit
+    surface was found on any cam.ac.uk host.
+- id: scim
+  conforms: false
+  evidence: >-
+    The Lookup/Ibis OpenAPI (https://www.lookup.cam.ac.uk/openapi-3.0.yaml, 39 paths) models
+    people, institutions and groups with a Cambridge-native vocabulary (CRSid, schemeid, fetch
+    parameters), not RFC 7643/7644 SCIM resources; no /scim/v2 path exists on lookup.cam.ac.uk or
+    api.apps.cam.ac.uk.
+- id: lti
+  conforms: false
+  evidence: >-
+    No LTI 1.3 platform or tool surface was found on a cam.ac.uk host; the University's VLE
+    integrations were not exposed on any institution-operated endpoint probed.
+- id: oneroster
+  conforms: false
+  evidence: No OneRoster endpoint found; the gateway's student surface is the CamSIS-sourced University Student API.
+- id: ed-fi
+  conforms: false
+  evidence: Ed-Fi is a US K-12/state-longitudinal standard with no UK higher-education footprint; nothing found.
+- id: caliper
+  conforms: false
+  evidence: No IMS Caliper Analytics sensor or event store found on any institution-operated host.
+- id: qti
+  conforms: false
+  evidence: No QTI assessment surface found on any institution-operated host.
+adjacent_standards:
+- id: openid-connect
+  conforms: true
+  evidence: >-
+    https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration returns HTTP 200
+    application/json with issuer https://api.apps.cam.ac.uk/oauth2/v1/, authorization_endpoint,
+    token_endpoint, userinfo_endpoint and jwks_uri, response_types_supported [code],
+    grant_types_supported [client_credentials, authorization_code], id_token_signing_alg_values_supported
+    [RS256], and code_challenge_methods_supported [S256]. Not in the education regime's standards[]
+    list, so it earns no domain-standard credit — recorded because it is the single strongest
+    machine-readable identity signal the institution publishes.
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    https://www.lookup.cam.ac.uk/openapi-3.0.yaml returns HTTP 200 application/yaml, 125,954 bytes,
+    openapi 3.0.0, info.title "Lookup/Ibis web service API", version 1.2, 39 paths, 10 component
+    schemas, two servers (live and test), basicAuth securityScheme. Swagger 2.0 JSON/YAML and a
+    WADL are published alongside it.
+- id: iiif-presentation-2.1
+  conforms: true
+  evidence: >-
+    https://cudl.lib.cam.ac.uk/iiif/MS-ADD-03996 returns HTTP 200 application/json (247,140 bytes)
+    with @context http://iiif.io/api/presentation/2/context.json and @type sc:Manifest.
+- id: iiif-image-2.1
+  conforms: true
+  evidence: >-
+    https://images.lib.cam.ac.uk/iiif/MS-ADD-03996-000-00001.jp2/info.json returns HTTP 200
+    application/ld+json with @context http://iiif.io/api/image/2/context.json, protocol
+    http://iiif.io/api/image, width 4032, height 5829, tiles and scaleFactors.
+- id: rioxx-3.0
+  conforms: true
+  evidence: >-
+    Apollo's OAI-PMH ListRecords with metadataPrefix=rioxx returns records against
+    http://docs.rioxx.net/schema/v3.0/rioxxterms/ — the UK research-funder metadata profile
+    expected of UK institutional repositories.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: https://www.cam.ac.uk/.well-known/security.txt returns HTTP 404.
