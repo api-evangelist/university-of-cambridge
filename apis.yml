@@ -513,7 +513,7 @@ apis:
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
   baseURL: https://www.lookup.cam.ac.uk/api/v1/
   tags:
-  - Persons
+  - person
   tags_raw:
   - person
   properties:
@@ -662,7 +662,7 @@ apis:
   - Research Information
   - CRIS
   - Tenant
-  - symplectic
+  - Symplectic
   - Research Data
   tags_raw:
   - Research Information
