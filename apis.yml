@@ -513,7 +513,7 @@ apis:
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
   baseURL: https://www.lookup.cam.ac.uk/api/v1/
   tags:
-  - person
+  - Persons
   tags_raw:
   - person
   properties:
