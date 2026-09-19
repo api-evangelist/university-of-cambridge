@@ -553,6 +553,12 @@ apis:
   - Identity Federation
   - SAML
   - Shibboleth
+  - SSO
+  - Metadata
+  tags_raw:
+  - Identity Federation
+  - SAML
+  - Shibboleth
   - Single Sign-On
   - Metadata
   properties:
@@ -637,6 +643,12 @@ apis:
   tags:
   - Library
   - Discovery
+  - Tenants
+  - Ex Libris
+  - Primo
+  tags_raw:
+  - Library
+  - Discovery
   - Tenant
   - Ex Libris
   - Primo
@@ -661,8 +673,8 @@ apis:
   baseURL: https://elements.admin.cam.ac.uk/
   tags:
   - Research Information
-  - CRIS
-  - Tenant
+  - CRI
+  - Tenants
   - Symplectic
   - Research Data
   tags_raw:
