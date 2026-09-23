@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Lookup/ web service group ibis API
+  title: Lookup/ web service Ibis API
   version: '1.2'
-  description: "Methods for querying and manipulating groups.\n\n#### The fetch parameter for groups\n\nAll methods that return groups also accept an optional `fetch`\nparameter that may be used to request additional information about the\ngroups returned. For more details about the general rules that apply to\nthe `fetch` parameter, refer to the `PersonMethods`\ndocumentation.\n\nFor groups the `fetch` parameter may be used to fetch references\nto people, institutions or other groups. In each case, only non-cancelled\npeople, institutions and groups will be included when fetching references.\nThe following references are supported:\n\n* `\"all_members\"` - fetches all the people who are members of the\n  group, including members of groups included by the group, and groups\n  included by those groups, and so on.\n\n* `\"direct_members\"` - fetches all the people who are direct\n  members of the group, not taking into account any included groups.\n\n* `\"members_of_inst\"` - if the group is a membership group for an\n  institution, this fetches that institution.\n\n* `\"owning_insts\"` - fetches all the institutions to which the\n  group belongs.\n\n* `\"manages_insts\"` - fetches all the institutions that the group\n  manages. Typically this only applies to \"Editor\" groups.\n\n* `\"manages_groups\"` - fetches all the groups that this group\n  manages. Note that some groups are self-managed, so this may be a\n  self-reference.\n\n* `\"managed_by_groups\"` - fetches all the groups that manage this\n  group.\n\n* `\"reads_groups\"` - fetches all the groups that this group has\n  privileged access to. This means that members of this group can see the\n  members of the referenced groups regardless of the membership visibility\n  settings.\n\n* `\"read_by_groups\"` - fetches all the groups that have privileged\n  access to this group.\n\n* `\"includes_groups\"` - fetches all the groups included by this\n  group.\n\n* `\"included_by_groups\"` - fetches all the groups that include\n  this group.\n\nAs with person `fetch` parameters, the references may be used\nin a chain by using the \"dot\" notation to fetch additional information\nabout referenced people, institutions or groups. For example\n`\"all_members.email\"` will fetch the email addresses of all members\nof the group. For more information about what can be fetched from\nreferenced people and institutions, refer to the documentation for\n`PersonMethods` and `InstitutionMethods`."
+  description: Common methods for searching for objects in the Lookup/Ibis database.
 servers:
 - url: https://lookup-test.srv.uis.cam.ac.uk/api/v1
   description: Test server
@@ -18,7 +18,7 @@ paths:
     get:
       tags:
       - ibis
-      summary: Get the ID of the last (most recent) transaction.
+      summary: Get the ID of the last (most recent) transaction
       description: 'Get the ID of the last (most recent) transaction.
 
 
@@ -55,7 +55,7 @@ paths:
     get:
       tags:
       - ibis
-      summary: Get the current API version number.
+      summary: Get the current API version number
       description: Get the current API version number.
       operationId: Ibis_getVersion
       responses:

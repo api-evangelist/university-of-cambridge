@@ -2,8 +2,75 @@ name: University of Cambridge
 description: University of Cambridge public developer/API footprint review for APIs.json cataloging.
 url: https://raw.githubusercontent.com/api-evangelist/university-of-cambridge/refs/heads/main/review.yml
 created: '2026-06-03'
-modified: '2026-06-03'
+modified: '2026-08-19'
 reviews:
+  - date: '2026-08-19'
+    rating: 4
+    summary: >-
+      University pipeline re-profile with the operator axis applied. Cambridge survives it
+      intact: the June 2026 audit found seventeen surfaces and classified all seventeen as
+      institution-operated, with zero vendor-attributed contracts to strip — unlike most of the
+      cohort, nothing here was ever Figshare's or Pure's. This pass added surfaces rather than
+      removing them. Three genuinely new institution-operated finds: a Shibboleth SAML 2.0 IdP
+      publishing signed metadata at shib.raven.cam.ac.uk (entityID
+      https://shib.raven.cam.ac.uk/shibboleth, authoritative over cam.ac.uk and
+      eresources.lib.cam.ac.uk); a live OpenID Connect discovery document on the gateway
+      (issuer https://api.apps.cam.ac.uk/oauth2/v1/, PKCE S256, RS256 id tokens); and the
+      Cambridge Digital Library IIIF Presentation 2.1 and Image 2.1 APIs. The developer portal's
+      own catalogue API was read and returns ten published APIs, six of them untouched since
+      2021-2022. The Lookup/Ibis OpenAPI stored in this repo was confirmed byte-identical to the
+      live first-party document at https://www.lookup.cam.ac.uk/openapi-3.0.yaml. Two vendor
+      platforms running under Cambridge subdomains were recorded as TENANT relationships rather
+      than as Cambridge contracts: iDiscover (idiscover.lib.cam.ac.uk CNAMEs to
+      cam.primo.exlibrisgroup.com, Ex Libris Primo VE, view id 44CAM_INST:44CAM_PROD) and
+      Elements (elements.admin.cam.ac.uk CNAMEs to cam.elements.symplectic.org, HTTP 401).
+      Honest limits recorded rather than papered over: nine of the ten gateway APIs have no
+      retrievable spec, the portal's /openapi.json is a 200-returning Angular SPA shell and was
+      rejected as a soft-404, the Lookup contract enumerates no error codes at all (39 paths,
+      only 200 and default), there is no security.txt, no llms.txt and no status page.
+    endpoints:
+      - url: https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+        status: 200
+        note: First-party OpenAPI 3.0, 125,954 bytes, 39 paths — identical to openapi/_original/.
+      - url: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+        status: 200
+        note: Live OIDC discovery on the institution's own gateway. NEW FIND.
+      - url: https://shib.raven.cam.ac.uk/shibboleth
+        status: 200
+        note: Shibboleth SAML 2.0 IdP metadata, University of Cambridge. NEW FIND.
+      - url: https://api.repository.cam.ac.uk/server/oai/request?verb=Identify
+        status: 200
+        note: Apollo OAI-PMH; 11 metadata formats incl. rioxx v3.0; 100+ sets.
+      - url: https://api.repository.cam.ac.uk/server/api
+        status: 200
+        note: DSpace 8.1 REST root, self-hosted on Cambridge IP space (131.111.98.101).
+      - url: https://cudl.lib.cam.ac.uk/iiif/MS-ADD-03996
+        status: 200
+        note: IIIF Presentation 2.1 manifest, 247KB. NEW FIND.
+      - url: https://images.lib.cam.ac.uk/iiif/MS-ADD-03996-000-00001.jp2/info.json
+        status: 200
+        note: IIIF Image 2.1 info.json. NEW FIND.
+      - url: https://developer.api.apps.cam.ac.uk/apis
+        status: 200
+        note: Portal catalogue API returns 10 published APIs with modification timestamps.
+      - url: https://api.datacite.org/prefixes/10.17863
+        status: 200
+        note: DOI prefix resolves to DataCite client "Apollo" at www.repository.cam.ac.uk.
+      - url: https://developer.api.apps.cam.ac.uk/openapi.json
+        status: 200
+        note: SOFT-404 — 2,138-byte Angular SPA shell, not a spec. Rejected.
+      - url: https://idiscover.lib.cam.ac.uk/
+        status: 200
+        note: TENANT — CNAME cam.primo.exlibrisgroup.com. Ex Libris contract, not Cambridge's.
+      - url: https://elements.admin.cam.ac.uk/
+        status: 401
+        note: TENANT — CNAME cam.elements.symplectic.org. Symplectic contract, not Cambridge's.
+      - url: https://www.cam.ac.uk/.well-known/security.txt
+        status: 404
+        note: No RFC 9116 security.txt on the primary domain.
+      - url: https://status.apps.cam.ac.uk/
+        status: 0
+        note: Still no public API-platform status page. Unchanged since June 2026.
   - date: '2026-06-03'
     rating: 4
     summary: >-

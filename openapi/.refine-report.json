@@ -1,10 +1,7 @@
 {
   "provider": "university-of-cambridge",
   "sources": [
-    "university-of-cambridge-group-api-openapi.yml",
-    "university-of-cambridge-ibis-api-openapi.yml",
-    "university-of-cambridge-institution-api-openapi.yml",
-    "university-of-cambridge-person-api-openapi.yml"
+    "_original/university-of-cambridge-lookup.yaml"
   ],
   "outputs": [
     "university-of-cambridge-group-api-openapi.yml",
@@ -15,6 +12,15 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "university-of-cambridge-lookup.yaml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "university-of-cambridge-group-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "university-of-cambridge-ibis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "university-of-cambridge-institution-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "university-of-cambridge-person-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

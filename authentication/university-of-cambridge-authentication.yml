@@ -1,12 +1,92 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/university-of-cambridge-lookup.yaml
+generated: '2026-08-19'
+method: probed
+x-operator: institution
+source: >-
+  Upgraded on 2026-08-19 from a derived read of the Lookup contract to a probed read of the
+  University's live identity surfaces: https://www.lookup.cam.ac.uk/openapi-3.0.yaml (first-party
+  OpenAPI 3.0, HTTP 200), https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+  (HTTP 200 application/json) and https://shib.raven.cam.ac.uk/shibboleth (HTTP 200, SAML 2.0 IdP
+  metadata). The prior record's `source:` pointed at openapi/university-of-cambridge-lookup.yaml,
+  a path that no longer exists in this repo — the pristine copy now lives at
+  openapi/_original/university-of-cambridge-lookup.yaml.
+note: >-
+  Cambridge runs three distinct authentication regimes side by side, all institution-operated, and
+  they do not share a story: HTTP Basic on the legacy Lookup/Ibis web service, OAuth 2.0 / OpenID
+  Connect on the UIS API Gateway, and SAML 2.0 / Shibboleth for federated web SSO. Only the first
+  is described in a machine-readable API contract.
 summary:
   types:
   - http
+  - oauth2
+  - openIdConnect
+  - saml
 schemes:
 - name: basicAuth
   type: http
   scheme: basic
+  method: derived
+  surface: university-of-cambridge:university-of-cambridge-person-api
   sources:
-  - openapi/university-of-cambridge-lookup.yaml
+  - openapi/_original/university-of-cambridge-lookup.yaml
+  - https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+  verified:
+    url: https://www.lookup.cam.ac.uk/api/v1/
+    status: 401
+    note: Anonymous request rejected — the declared scheme is actually enforced.
+- name: cambridgeApiGatewayOidc
+  type: openIdConnect
+  method: probed
+  surface: university-of-cambridge:gateway
+  openIdConnectUrl: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/openid-configuration
+  issuer: https://api.apps.cam.ac.uk/oauth2/v1/
+  endpoints:
+    authorization: https://api.apps.cam.ac.uk/oauth2/v1/auth
+    token: https://api.apps.cam.ac.uk/oauth2/v1/token
+    userinfo: https://api.apps.cam.ac.uk/oauth2/v1/userinfo
+    jwks: https://api.apps.cam.ac.uk/oauth2/v1/.well-known/jwks.json
+  grant_types:
+  - client_credentials
+  - authorization_code
+  response_types:
+  - code
+  response_modes:
+  - query
+  - fragment
+  id_token_signing_alg_values:
+  - RS256
+  token_endpoint_auth_methods:
+  - client_secret_post
+  - client_secret_basic
+  code_challenge_methods:
+  - S256
+  scopes_advertised: none
+  note: >-
+    The discovery document declares no scopes_supported, so no scopes/ artifact is emitted — a
+    scope list would have to be invented and this pipeline does not invent. PKCE (S256) is
+    advertised, which is the strongest single ergonomics signal on the estate.
+  documentation: https://docs.raven.cam.ac.uk/en/latest/creating-oauth2-client-credentials/
+- name: ravenShibbolethSaml
+  type: saml
+  method: probed
+  surface: university-of-cambridge:shibboleth-idp
+  entityID: https://shib.raven.cam.ac.uk/shibboleth
+  metadata: https://shib.raven.cam.ac.uk/shibboleth
+  protocols:
+  - urn:oasis:names:tc:SAML:2.0:protocol
+  - urn:oasis:names:tc:SAML:1.1:protocol
+  - urn:mace:shibboleth:1.0
+  scopes_authoritative:
+  - cam.ac.uk
+  - eresources.lib.cam.ac.uk
+  federation: UK Access Management Federation (republished via eduGAIN)
+  note: >-
+    Web SSO for people, not an API credential. Recorded because SAML/Shibboleth is a named standard
+    in the Kin Score education regime and because federation metadata is the one machine-readable
+    artifact an institution cannot outsource.
+not_found:
+- name: api_keys
+  note: >-
+    The developer portal documents "Using API Keys" as a consumption pattern, but no key-issuance
+    endpoint or key description is reachable anonymously; registration is behind portal login.
+- name: mtls
+  note: No mutual-TLS requirement documented on any institution-operated host.
