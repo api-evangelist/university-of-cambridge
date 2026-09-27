@@ -163,7 +163,7 @@ apis:
     url: conformance/university-of-cambridge-education-standards.yml
 - aid: university-of-cambridge:university-of-cambridge-group-api
   x-operator: institution
-  name: University of Cambridge group API
+  name: University of Cambridge Group API
   description: >-
     Methods for querying and manipulating groups.
 
@@ -266,7 +266,7 @@ apis:
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-ibis-api
   x-operator: institution
-  name: University of Cambridge ibis API
+  name: University of Cambridge Ibis API
   description: Common methods for searching for objects in the Lookup/Ibis database.
   humanURL: https://www.lookup.cam.ac.uk/doc/ws-doc/
   baseURL: https://www.lookup.cam.ac.uk/api/v1/
@@ -291,7 +291,7 @@ apis:
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-institution-api
   x-operator: institution
-  name: University of Cambridge institution API
+  name: University of Cambridge Institution API
   description: >-
     Methods for querying and manipulating institutions.
 
@@ -402,7 +402,7 @@ apis:
     url: json-ld/university-of-cambridge-context.jsonld
 - aid: university-of-cambridge:university-of-cambridge-person-api
   x-operator: institution
-  name: University of Cambridge person API
+  name: University of Cambridge Person API
   description: >-
     Methods for querying and manipulating people.
 

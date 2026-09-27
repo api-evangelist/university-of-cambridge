@@ -1185,28 +1185,21 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    Identifier:
+    ContactPhoneNumber:
       type: object
       properties:
-        scheme:
+        phoneType:
           type: string
-          description: The identifier's scheme (e.g., "crsid").
-        value:
+          description: The phone number's type.
+        number:
           type: string
-          description: The identifier's value in that scheme (e.g., a specific CRSid value).
-      description: Class representing a person's identifier, for use by the web service API.
-    ContactWebPage:
-      type: object
-      properties:
-        url:
+          description: The phone number.
+        comment:
           type: string
-          description: The web page's URL.
-        label:
-          type: string
-          description: The web page's label (link text) if set.
-      description: 'Class representing a web page referred to by an institution contact row,
+          description: Any comment associated with the phone number.
+      description: 'Class representing a phone number held on an institution contact row, for
 
-        for use by the web service API.'
+        use by the web service API.'
     Person:
       type: object
       properties:
@@ -1314,6 +1307,135 @@ components:
         the identifier is the person''s primary identifier (typically their CRSid),
 
         regardless of which identifier was used to query for the person.'
+    Attribute:
+      type: object
+      properties:
+        attrid:
+          type: integer
+          format: int64
+          description: The unique internal identifier of the attribute.
+        scheme:
+          type: string
+          description: The attribute's scheme.
+        value:
+          type: string
+          description: The attribute's value (except for binary attributes).
+        comment:
+          type: string
+          description: Any comment associated with the attribute.
+        instid:
+          type: string
+          description: 'For a person attribute, the optional institution that the attribute
+
+            is associated with. This will not be set for institution attributes.'
+        visibility:
+          type: string
+          description: 'For a person attribute, it''s visibility (`"private"`,
+
+            `"institution"`, `"university"` or `"world"`). This
+
+            will not be set for institution attributes.'
+        effectiveFrom:
+          type: string
+          format: date-time
+          description: For time-limited attributes, the date from which it takes effect.
+        effectiveTo:
+          type: string
+          format: date-time
+          description: For time-limited attributes, the date after which it is no longer effective.
+        owningGroupid:
+          type: string
+          description: 'For a person attribute, the ID of the group that owns it (typically
+
+            the user agent group that created it).'
+      description: 'Class representing an attribute of a person or institution returned by
+
+        the web service API. Note that for institution attributes, the instid,
+
+        visibility and owningGroupid fields will be `null`.'
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP error status code.
+        code:
+          type: string
+          description: A short textual description of the error status code.
+        message:
+          type: string
+          description: A short textual description of the error message (typically one line).
+        details:
+          type: string
+          description: The full details of the error (e.g., a Java stack trace).
+      description: Class representing an error returned by the web service API.
+    ContactRow:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The contact row's text.
+        bold:
+          type: boolean
+          description: 'Flag indicating if the contact row''s text is normally displayed in
+
+            bold.'
+        italic:
+          type: boolean
+          description: 'Flag indicating if the contact row''s text is normally displayed in
+
+            italics.'
+        addresses:
+          type: array
+          items:
+            type: string
+          description: 'A list of the contact row''s addresses. This will always be non-null,
+
+            but may be an empty list.'
+        emails:
+          type: array
+          items:
+            type: string
+          description: 'A list of the contact row''s email addresses. This will always be
+
+            non-null, but may be an empty list.'
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the people referred to by the contact row. This will always
+
+            be non-null, but may be an empty list.'
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPhoneNumber'
+          description: 'A list of the contact row''s phone numbers. This will always be
+
+            non-null, but may be an empty list.'
+        webPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactWebPage'
+          description: 'A list of the contact row''s web pages. This will always be non-null,
+
+            but may be an empty list.'
+      description: 'Class representing an institution contact row, for use by the web
+
+        services API.'
+    ContactWebPage:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The web page's URL.
+        label:
+          type: string
+          description: The web page's label (link text) if set.
+      description: 'Class representing a web page referred to by an institution contact row,
+
+        for use by the web service API.'
     Group:
       type: object
       properties:
@@ -1629,138 +1751,16 @@ components:
 
             (if the "flatten" parameter is specified).'
       description: Class representing an institution returned by the web service API.
-    Attribute:
+    Identifier:
       type: object
       properties:
-        attrid:
-          type: integer
-          format: int64
-          description: The unique internal identifier of the attribute.
         scheme:
           type: string
-          description: The attribute's scheme.
+          description: The identifier's scheme (e.g., "crsid").
         value:
           type: string
-          description: The attribute's value (except for binary attributes).
-        comment:
-          type: string
-          description: Any comment associated with the attribute.
-        instid:
-          type: string
-          description: 'For a person attribute, the optional institution that the attribute
-
-            is associated with. This will not be set for institution attributes.'
-        visibility:
-          type: string
-          description: 'For a person attribute, it''s visibility (`"private"`,
-
-            `"institution"`, `"university"` or `"world"`). This
-
-            will not be set for institution attributes.'
-        effectiveFrom:
-          type: string
-          format: date-time
-          description: For time-limited attributes, the date from which it takes effect.
-        effectiveTo:
-          type: string
-          format: date-time
-          description: For time-limited attributes, the date after which it is no longer effective.
-        owningGroupid:
-          type: string
-          description: 'For a person attribute, the ID of the group that owns it (typically
-
-            the user agent group that created it).'
-      description: 'Class representing an attribute of a person or institution returned by
-
-        the web service API. Note that for institution attributes, the instid,
-
-        visibility and owningGroupid fields will be `null`.'
-    Error:
-      type: object
-      properties:
-        status:
-          type: integer
-          format: int32
-          description: The HTTP error status code.
-        code:
-          type: string
-          description: A short textual description of the error status code.
-        message:
-          type: string
-          description: A short textual description of the error message (typically one line).
-        details:
-          type: string
-          description: The full details of the error (e.g., a Java stack trace).
-      description: Class representing an error returned by the web service API.
-    ContactPhoneNumber:
-      type: object
-      properties:
-        phoneType:
-          type: string
-          description: The phone number's type.
-        number:
-          type: string
-          description: The phone number.
-        comment:
-          type: string
-          description: Any comment associated with the phone number.
-      description: 'Class representing a phone number held on an institution contact row, for
-
-        use by the web service API.'
-    ContactRow:
-      type: object
-      properties:
-        description:
-          type: string
-          description: The contact row's text.
-        bold:
-          type: boolean
-          description: 'Flag indicating if the contact row''s text is normally displayed in
-
-            bold.'
-        italic:
-          type: boolean
-          description: 'Flag indicating if the contact row''s text is normally displayed in
-
-            italics.'
-        addresses:
-          type: array
-          items:
-            type: string
-          description: 'A list of the contact row''s addresses. This will always be non-null,
-
-            but may be an empty list.'
-        emails:
-          type: array
-          items:
-            type: string
-          description: 'A list of the contact row''s email addresses. This will always be
-
-            non-null, but may be an empty list.'
-        people:
-          type: array
-          items:
-            $ref: '#/components/schemas/Person'
-          description: 'A list of the people referred to by the contact row. This will always
-
-            be non-null, but may be an empty list.'
-        phoneNumbers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContactPhoneNumber'
-          description: 'A list of the contact row''s phone numbers. This will always be
-
-            non-null, but may be an empty list.'
-        webPages:
-          type: array
-          items:
-            $ref: '#/components/schemas/ContactWebPage'
-          description: 'A list of the contact row''s web pages. This will always be non-null,
-
-            but may be an empty list.'
-      description: 'Class representing an institution contact row, for use by the web
-
-        services API.'
+          description: The identifier's value in that scheme (e.g., a specific CRSid value).
+      description: Class representing a person's identifier, for use by the web service API.
   responses:
     ServerError:
       description: Unexpected error

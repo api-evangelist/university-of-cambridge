@@ -79,24 +79,6 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    Error:
-      type: object
-      properties:
-        status:
-          type: integer
-          format: int32
-          description: The HTTP error status code.
-        code:
-          type: string
-          description: A short textual description of the error status code.
-        message:
-          type: string
-          description: A short textual description of the error message (typically one line).
-        details:
-          type: string
-          description: The full details of the error (e.g., a Java stack trace).
-      description: Class representing an error returned by the web service API.
   responses:
     ServerError:
       description: Unexpected error
@@ -115,6 +97,24 @@ components:
                   This may be just a simple textual value or it may contain more complex
 
                   entities such as people, institutions, groups, attributes, etc.'
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP error status code.
+        code:
+          type: string
+          description: A short textual description of the error status code.
+        message:
+          type: string
+          description: A short textual description of the error message (typically one line).
+        details:
+          type: string
+          description: The full details of the error (e.g., a Java stack trace).
+      description: Class representing an error returned by the web service API.
   securitySchemes:
     basicAuth:
       type: http
