@@ -1185,33 +1185,18 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    Error:
+    ContactWebPage:
       type: object
       properties:
-        status:
-          type: integer
-          format: int32
-          description: The HTTP error status code.
-        code:
+        url:
           type: string
-          description: A short textual description of the error status code.
-        message:
+          description: The web page's URL.
+        label:
           type: string
-          description: A short textual description of the error message (typically one line).
-        details:
-          type: string
-          description: The full details of the error (e.g., a Java stack trace).
-      description: Class representing an error returned by the web service API.
-    Identifier:
-      type: object
-      properties:
-        scheme:
-          type: string
-          description: The identifier's scheme (e.g., "crsid").
-        value:
-          type: string
-          description: The identifier's value in that scheme (e.g., a specific CRSid value).
-      description: Class representing a person's identifier, for use by the web service API.
+          description: The web page's label (link text) if set.
+      description: 'Class representing a web page referred to by an institution contact row,
+
+        for use by the web service API.'
     Group:
       type: object
       properties:
@@ -1368,21 +1353,6 @@ components:
 
             "flatten" parameter is specified).'
       description: Class representing a group returned by the web service API.
-    ContactPhoneNumber:
-      type: object
-      properties:
-        phoneType:
-          type: string
-          description: The phone number's type.
-        number:
-          type: string
-          description: The phone number.
-        comment:
-          type: string
-          description: Any comment associated with the phone number.
-      description: 'Class representing a phone number held on an institution contact row, for
-
-        use by the web service API.'
     Attribute:
       type: object
       properties:
@@ -1477,113 +1447,6 @@ components:
       description: 'Class representing an attribute scheme. This may apply to attributes of
 
         people or institutions.'
-    Person:
-      type: object
-      properties:
-        cancelled:
-          type: boolean
-          description: Flag indicating if the person is cancelled.
-        identifier:
-          allOf:
-          - $ref: '#/components/schemas/Identifier'
-          - description: The person's primary identifier (typically their CRSid).
-        displayName:
-          type: string
-          description: The person's display name (if visible).
-        registeredName:
-          type: string
-          description: The person's registered name (if visible).
-        surname:
-          type: string
-          description: The person's surname (if visible).
-        visibleName:
-          type: string
-          description: 'The person''s display name if that is visible, otherwise their
-
-            registered name if that is visible, otherwise their surname if
-
-            that is visible, otherwise the value of their primary identifier
-
-            (typically their CRSid) which is always visible.'
-        misAffiliation:
-          type: string
-          description: 'The person''s MIS status (`"staff"`, `"student"`,
-
-            `"staff,student"` or `""`).'
-        identifiers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Identifier'
-          description: 'A list of the person''s identifiers. This will only be populated if
-
-            the `fetch` parameter included the
-
-            `"all_identifiers"` option.'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attribute'
-          description: 'A list of the person''s attributes. This will only be populated if the
-
-            `fetch` parameter includes the `"all_attrs"` option,
-
-            or any specific attribute schemes such as `"email"` or
-
-            `"title"`, or the special pseudo-attribute scheme
-
-            `"phone_numbers"`.'
-        institutions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Institution'
-          description: 'A list of all the institution''s to which the person belongs. This
-
-            will only be populated if the `fetch` parameter includes
-
-            the `"all_insts"` option.'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of all the groups to which the person belongs, including
-
-            indirect group memberships, via groups that include other groups.
-
-            This will only be populated if the `fetch` parameter
-
-            includes the `"all_groups"` option.'
-        directGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of all the groups that the person directly belongs to. This
-
-            does not include indirect group memberships - i.e., groups that
-
-            include these groups. This will only be populated if the
-
-            `fetch` parameter includes the `"direct_groups"`
-
-            option.'
-        id:
-          type: string
-          description: 'An ID that can uniquely identify this person within the returned
-
-            XML/JSON document. This is only used in the flattened XML/JSON
-
-            representation (if the "flatten" parameter is specified).'
-        ref:
-          type: string
-          description: 'A reference (by id) to a person element in the XML/JSON document.
-
-            This is only used in the flattened XML/JSON representation (if the
-
-            "flatten" parameter is specified).'
-      description: 'Class representing a person returned by the web service API. Note that
-
-        the identifier is the person''s primary identifier (typically their CRSid),
-
-        regardless of which identifier was used to query for the person.'
     Institution:
       type: object
       properties:
@@ -1749,18 +1612,155 @@ components:
       description: 'Class representing an institution contact row, for use by the web
 
         services API.'
-    ContactWebPage:
+    ContactPhoneNumber:
       type: object
       properties:
-        url:
+        phoneType:
           type: string
-          description: The web page's URL.
-        label:
+          description: The phone number's type.
+        number:
           type: string
-          description: The web page's label (link text) if set.
-      description: 'Class representing a web page referred to by an institution contact row,
+          description: The phone number.
+        comment:
+          type: string
+          description: Any comment associated with the phone number.
+      description: 'Class representing a phone number held on an institution contact row, for
 
-        for use by the web service API.'
+        use by the web service API.'
+    Identifier:
+      type: object
+      properties:
+        scheme:
+          type: string
+          description: The identifier's scheme (e.g., "crsid").
+        value:
+          type: string
+          description: The identifier's value in that scheme (e.g., a specific CRSid value).
+      description: Class representing a person's identifier, for use by the web service API.
+    Person:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: Flag indicating if the person is cancelled.
+        identifier:
+          allOf:
+          - $ref: '#/components/schemas/Identifier'
+          - description: The person's primary identifier (typically their CRSid).
+        displayName:
+          type: string
+          description: The person's display name (if visible).
+        registeredName:
+          type: string
+          description: The person's registered name (if visible).
+        surname:
+          type: string
+          description: The person's surname (if visible).
+        visibleName:
+          type: string
+          description: 'The person''s display name if that is visible, otherwise their
+
+            registered name if that is visible, otherwise their surname if
+
+            that is visible, otherwise the value of their primary identifier
+
+            (typically their CRSid) which is always visible.'
+        misAffiliation:
+          type: string
+          description: 'The person''s MIS status (`"staff"`, `"student"`,
+
+            `"staff,student"` or `""`).'
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+          description: 'A list of the person''s identifiers. This will only be populated if
+
+            the `fetch` parameter included the
+
+            `"all_identifiers"` option.'
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+          description: 'A list of the person''s attributes. This will only be populated if the
+
+            `fetch` parameter includes the `"all_attrs"` option,
+
+            or any specific attribute schemes such as `"email"` or
+
+            `"title"`, or the special pseudo-attribute scheme
+
+            `"phone_numbers"`.'
+        institutions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of all the institution''s to which the person belongs. This
+
+            will only be populated if the `fetch` parameter includes
+
+            the `"all_insts"` option.'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of all the groups to which the person belongs, including
+
+            indirect group memberships, via groups that include other groups.
+
+            This will only be populated if the `fetch` parameter
+
+            includes the `"all_groups"` option.'
+        directGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of all the groups that the person directly belongs to. This
+
+            does not include indirect group memberships - i.e., groups that
+
+            include these groups. This will only be populated if the
+
+            `fetch` parameter includes the `"direct_groups"`
+
+            option.'
+        id:
+          type: string
+          description: 'An ID that can uniquely identify this person within the returned
+
+            XML/JSON document. This is only used in the flattened XML/JSON
+
+            representation (if the "flatten" parameter is specified).'
+        ref:
+          type: string
+          description: 'A reference (by id) to a person element in the XML/JSON document.
+
+            This is only used in the flattened XML/JSON representation (if the
+
+            "flatten" parameter is specified).'
+      description: 'Class representing a person returned by the web service API. Note that
+
+        the identifier is the person''s primary identifier (typically their CRSid),
+
+        regardless of which identifier was used to query for the person.'
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP error status code.
+        code:
+          type: string
+          description: A short textual description of the error status code.
+        message:
+          type: string
+          description: A short textual description of the error message (typically one line).
+        details:
+          type: string
+          description: The full details of the error (e.g., a Java stack trace).
+      description: Class representing an error returned by the web service API.
   responses:
     ServerError:
       description: Unexpected error

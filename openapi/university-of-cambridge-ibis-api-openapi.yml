@@ -79,24 +79,6 @@ paths:
         default:
           $ref: '#/components/responses/ServerError'
 components:
-  responses:
-    ServerError:
-      description: Unexpected error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              result:
-                type: object
-                properties:
-                  error:
-                    $ref: '#/components/schemas/Error'
-                description: 'Class representing the top-level container for all XML and JSON results.
-
-                  This may be just a simple textual value or it may contain more complex
-
-                  entities such as people, institutions, groups, attributes, etc.'
   schemas:
     Error:
       type: object
@@ -115,6 +97,24 @@ components:
           type: string
           description: The full details of the error (e.g., a Java stack trace).
       description: Class representing an error returned by the web service API.
+  responses:
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              result:
+                type: object
+                properties:
+                  error:
+                    $ref: '#/components/schemas/Error'
+                description: 'Class representing the top-level container for all XML and JSON results.
+
+                  This may be just a simple textual value or it may contain more complex
+
+                  entities such as people, institutions, groups, attributes, etc.'
   securitySchemes:
     basicAuth:
       type: http
