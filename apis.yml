@@ -64,8 +64,6 @@ tags:
   - Russell Group
   - Identity
   - Identity Federation
-  - API Gateway
-  - Developer Portal
   - Research Data
   - Open Access
   - Research Repository
@@ -799,3 +797,6 @@ x-coverage:
     status: 0
   checked: '2026-08-19'
   method: pipeline-university
+x-tags-removed:
+- Developer Portal
+- API Gateway
