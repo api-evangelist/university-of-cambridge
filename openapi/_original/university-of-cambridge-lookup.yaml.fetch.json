@@ -1,0 +1,12 @@
+{
+ "url": "https://www.lookup.cam.ac.uk/openapi-3.0.yaml",
+ "requested_url": "https://www.lookup.cam.ac.uk/openapi-3.0.yaml",
+ "status": 200,
+ "content_type": "application/yaml",
+ "bytes": 125954,
+ "sha256": "607955beae897ea9d4ef61c95d623bbd4f05893fbfdf4927eca2a944556a23ef",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
