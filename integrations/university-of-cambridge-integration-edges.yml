@@ -1,0 +1,134 @@
+edges:
+- partner_name: eduGAIN
+  partner: null
+  type: register
+  channel: standard-directory
+  relationship: network-participant
+  direction: partner-built
+  evidence: https://technical.edugain.org/api.php?action=list_entities&type=idp&format=json
+  category: research and education identity federation
+  contract_reference:
+    network: eduGAIN (GÉANT interfederation)
+    spec_file: null
+    roles:
+    - identity-provider
+    - service-provider
+    role: identity-and-service-provider
+    federations:
+    - UK-FEDERATION
+    matched_by: domain:cam.ac.uk
+    entities:
+    - entity_id: https://shib.raven.cam.ac.uk/shibboleth
+      role: identity-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: false
+    - entity_id: https://ftht.sociology.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www-cvdc.eng.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www-trg.eng.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.anam.eng.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.cbsb-4rdatabase.medschl.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.climatescience.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.cnec.group.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.cnn.group.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.gft.eng.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.images.group.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.immunology.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.infectiousdisease.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.languagesciences.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    - entity_id: https://www.wrongdoing.mml.cam.ac.uk/shibboleth
+      role: service-provider
+      federation: UK-FEDERATION
+      display_name: University of Cambridge
+      entity_categories: null
+      sirtfi: false
+      coco: true
+    detected_by: sweep-higher-ed.py
+    detected: '2026-10-15'
+  detected_by: sweep-higher-ed.py
+  first_seen: '2026-10-15'
+generated: '2026-10-15'
+method: searched
+checked:
+- https://technical.edugain.org/api.php?action=list_entities&type=idp&format=json
+- https://technical.edugain.org/api.php?action=list_entities&type=sp&format=json
