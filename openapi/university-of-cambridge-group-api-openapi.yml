@@ -716,174 +716,23 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    ContactWebPage:
+    Error:
       type: object
       properties:
-        url:
+        status:
+          type: integer
+          format: int32
+          description: The HTTP error status code.
+        code:
           type: string
-          description: The web page's URL.
-        label:
+          description: A short textual description of the error status code.
+        message:
           type: string
-          description: The web page's label (link text) if set.
-      description: 'Class representing a web page referred to by an institution contact row,
-
-        for use by the web service API.'
-    Group:
-      type: object
-      properties:
-        cancelled:
-          type: boolean
-          description: Flag indicating if the group is cancelled.
-        groupid:
+          description: A short textual description of the error message (typically one line).
+        details:
           type: string
-          description: The group's numeric ID (actually a string e.g., "100656").
-        name:
-          type: string
-          description: The group's unique name (e.g., "cs-editors").
-        title:
-          type: string
-          description: The group's title.
-        description:
-          type: string
-          description: The more detailed description of the group.
-        email:
-          type: string
-          description: The group's email address.
-        membersOfInst:
-          allOf:
-          - $ref: '#/components/schemas/Institution'
-          - description: 'The details of the institution for which this group forms all or
-
-              part of the membership. This will only be set for groups that are
-
-              membership groups of institutions if the `fetch` parameter
-
-              includes the `"members_of_inst"` option.'
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/Person'
-          description: 'A list of the group''s members, including (recursively) any members of
-
-            any included groups. This will only be populated if the
-
-            `fetch` parameter includes the `"all_members"`
-
-            option.'
-        directMembers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Person'
-          description: 'A list of the group''s direct members, not including any members
-
-            included via groups included by this group. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"direct_members"` option.'
-        owningInsts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Institution'
-          description: 'A list of the institutions to which this group belongs. This will only
-
-            be populated if the `fetch` parameter includes the
-
-            `"owning_insts"` option.'
-        managesInsts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Institution'
-          description: 'A list of the institutions managed by this group. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"manages_insts"` option.'
-        managesGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups managed by this group. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"manages_groups"` option.'
-        managedByGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups that manage this group. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"managed_by_groups"` option.'
-        readsGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups that this group has privileged access to. Members
-
-            of this group will be able to read the members of any of those groups,
-
-            regardless of the membership visibilities. This will only be populated
-
-            if the `fetch` parameter includes the
-
-            `"reads_groups"` option.'
-        readByGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups that have privileged access to this group.
-
-            Members of those groups will be able to read the members of this
-
-            group, regardless of the membership visibilities. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"read_by_groups"` option.'
-        includesGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups directly included in this group. Any members of
-
-            the included groups (and recursively any groups that they include)
-
-            will automatically be included in this group. This will only be
-
-            populated if the `fetch` parameter includes the
-
-            `"includes_groups"` option.'
-        includedByGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-          description: 'A list of the groups that directly include this group. Any members of
-
-            this group will automatically be included in those groups (and
-
-            recursively in any groups that include those groups). This will only
-
-            be populated if the `fetch` parameter includes the
-
-            `"included_by_groups"` option.'
-        id:
-          type: string
-          description: 'An ID that can uniquely identify this group within the returned
-
-            XML/JSON document. This is only used in the flattened XML/JSON
-
-            representation (if the "flatten" parameter is specified).'
-        ref:
-          type: string
-          description: 'A reference (by id) to a group element in the XML/JSON document.
-
-            This is only used in the flattened XML/JSON representation (if the
-
-            "flatten" parameter is specified).'
-      description: Class representing a group returned by the web service API.
+          description: The full details of the error (e.g., a Java stack trace).
+      description: Class representing an error returned by the web service API.
     Attribute:
       type: object
       properties:
@@ -1095,6 +944,162 @@ components:
       description: 'Class representing an institution contact row, for use by the web
 
         services API.'
+    Group:
+      type: object
+      properties:
+        cancelled:
+          type: boolean
+          description: Flag indicating if the group is cancelled.
+        groupid:
+          type: string
+          description: The group's numeric ID (actually a string e.g., "100656").
+        name:
+          type: string
+          description: The group's unique name (e.g., "cs-editors").
+        title:
+          type: string
+          description: The group's title.
+        description:
+          type: string
+          description: The more detailed description of the group.
+        email:
+          type: string
+          description: The group's email address.
+        membersOfInst:
+          allOf:
+          - $ref: '#/components/schemas/Institution'
+          - description: 'The details of the institution for which this group forms all or
+
+              part of the membership. This will only be set for groups that are
+
+              membership groups of institutions if the `fetch` parameter
+
+              includes the `"members_of_inst"` option.'
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the group''s members, including (recursively) any members of
+
+            any included groups. This will only be populated if the
+
+            `fetch` parameter includes the `"all_members"`
+
+            option.'
+        directMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+          description: 'A list of the group''s direct members, not including any members
+
+            included via groups included by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"direct_members"` option.'
+        owningInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institutions to which this group belongs. This will only
+
+            be populated if the `fetch` parameter includes the
+
+            `"owning_insts"` option.'
+        managesInsts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+          description: 'A list of the institutions managed by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"manages_insts"` option.'
+        managesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups managed by this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"manages_groups"` option.'
+        managedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that manage this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"managed_by_groups"` option.'
+        readsGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that this group has privileged access to. Members
+
+            of this group will be able to read the members of any of those groups,
+
+            regardless of the membership visibilities. This will only be populated
+
+            if the `fetch` parameter includes the
+
+            `"reads_groups"` option.'
+        readByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that have privileged access to this group.
+
+            Members of those groups will be able to read the members of this
+
+            group, regardless of the membership visibilities. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"read_by_groups"` option.'
+        includesGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups directly included in this group. Any members of
+
+            the included groups (and recursively any groups that they include)
+
+            will automatically be included in this group. This will only be
+
+            populated if the `fetch` parameter includes the
+
+            `"includes_groups"` option.'
+        includedByGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+          description: 'A list of the groups that directly include this group. Any members of
+
+            this group will automatically be included in those groups (and
+
+            recursively in any groups that include those groups). This will only
+
+            be populated if the `fetch` parameter includes the
+
+            `"included_by_groups"` option.'
+        id:
+          type: string
+          description: 'An ID that can uniquely identify this group within the returned
+
+            XML/JSON document. This is only used in the flattened XML/JSON
+
+            representation (if the "flatten" parameter is specified).'
+        ref:
+          type: string
+          description: 'A reference (by id) to a group element in the XML/JSON document.
+
+            This is only used in the flattened XML/JSON representation (if the
+
+            "flatten" parameter is specified).'
+      description: Class representing a group returned by the web service API.
     ContactPhoneNumber:
       type: object
       properties:
@@ -1110,6 +1115,18 @@ components:
       description: 'Class representing a phone number held on an institution contact row, for
 
         use by the web service API.'
+    ContactWebPage:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The web page's URL.
+        label:
+          type: string
+          description: The web page's label (link text) if set.
+      description: 'Class representing a web page referred to by an institution contact row,
+
+        for use by the web service API.'
     Identifier:
       type: object
       properties:
@@ -1227,23 +1244,6 @@ components:
         the identifier is the person''s primary identifier (typically their CRSid),
 
         regardless of which identifier was used to query for the person.'
-    Error:
-      type: object
-      properties:
-        status:
-          type: integer
-          format: int32
-          description: The HTTP error status code.
-        code:
-          type: string
-          description: A short textual description of the error status code.
-        message:
-          type: string
-          description: A short textual description of the error message (typically one line).
-        details:
-          type: string
-          description: The full details of the error (e.g., a Java stack trace).
-      description: Class representing an error returned by the web service API.
   responses:
     ServerError:
       description: Unexpected error
