@@ -122,3 +122,9 @@ components:
 externalDocs:
   description: More information
   url: https://www.lookup.cam.ac.uk/doc/ws-doc
+x-provenance:
+  method: harvested
+  publisher: University of Cambridge
+  source: https://www.lookup.cam.ac.uk/openapi-3.0.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
